@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity (name = "member")
 @Getter
@@ -26,7 +28,7 @@ public class Member extends Auditable {
     private String profileImage;
 
     @Column(name = "member_nickname", nullable = false)
-    private String nickname;
+    private String  ;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "member_gender", nullable = false)
@@ -55,6 +57,9 @@ public class Member extends Auditable {
 
     @Column (name = "member_ban_count")
     private Integer banCount;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles = new ArrayList<>();
 
     public enum memberGender{
         M("남성"),
