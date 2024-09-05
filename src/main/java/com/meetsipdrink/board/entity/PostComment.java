@@ -1,5 +1,6 @@
 package com.meetsipdrink.board.entity;
 
+import com.meetsipdrink.audit.Auditable;
 import com.meetsipdrink.member.entity.Member;
 import com.sun.istack.NotNull;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import java.util.List;
 @Setter
 @Entity
 @NoArgsConstructor
-public class PostComment {
+public class PostComment extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postCommentId;

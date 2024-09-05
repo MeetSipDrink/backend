@@ -1,5 +1,6 @@
 package com.meetsipdrink.board.entity;
 
+import com.meetsipdrink.audit.Auditable;
 import com.meetsipdrink.member.entity.Member;
 import com.sun.istack.NotNull;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import java.util.List;
 @Setter
 @Entity
 @NoArgsConstructor
-public class Post {
+public class Post extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
@@ -32,6 +33,9 @@ public class Post {
 
     @Column(name = "post_like_count", nullable = false)
     private int likeCount = 0;
+
+    @Column(name = "post_comment_count", nullable = false)
+    private int commentCount = 0;
 
     @ManyToOne
     @JoinColumn(name = "MEMBER_ID")
