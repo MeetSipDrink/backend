@@ -18,17 +18,17 @@ public class Member extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long memberId;
 
-    @Column(name = "member_email" , nullable = false )
+    @Column(name = "member_email" , nullable = false, unique = true , updatable = false )
     private String email;
 
     @Column(name = "member_password", nullable = false)
     private String password;
 
-    @Column (name = "member_profile_image")
+    @Column (name = "member_profile_image" )
     private String profileImage;
 
-    @Column(name = "member_nickname", nullable = false)
-    private String  nickname ;
+    @Column(name = "member_nickname", nullable = false , unique = true )
+    private String  nickname;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "member_gender", nullable = false)
@@ -40,23 +40,24 @@ public class Member extends Auditable {
     @Column (name = "member_age" , nullable = false)
     private Integer age;
 
+    @Enumerated(EnumType.STRING)
     @Column (name = "member_status" , nullable = false)
-    private memberStatus status;
+    private memberStatus status = memberStatus.isActive;
 
     @Column (name = "alcohol_type1" , nullable = false)
     private String alcoholType1;
 
-    @Column (name = "alcohol_type2")
+    @Column (name = "alcohol_type2" , nullable = true)
     private String alcoholType2;
 
-    @Column (name = "alcohol_type3")
+    @Column (name = "alcohol_type3" , nullable = true)
     private String alcoholType3;
 
     @Column (name = "member_chat_room_status" )
     private Boolean chatRoomStatus = false;
 
     @Column (name = "member_ban_count")
-    private Integer banCount;
+    private Integer banCount = 0 ;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
