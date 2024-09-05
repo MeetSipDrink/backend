@@ -161,26 +161,3 @@ server/src/*/*.iml
 
 mysql_data
 src/main/generated/
-
-### 추가된 내용 ###
-# Mac OS에서 생성되는 파일들
-.DS_Store               # Mac OS에서 자동 생성되는 디렉토리 메타데이터 파일
-.AppleDouble            # Mac OS에서 파일 및 디렉토리 복사를 위한 숨겨진 파일
-.LSOverride             # Mac OS에서 파일 연결 정보
-# Windows에서 생성되는 파일들
-Thumbs.db               # Windows에서 자동 생성되는 이미지 미리보기 캐시 파일
-ehthumbs.db             # Windows에서 자동 생성되는 미디어 파일의 미리보기 파일
-# Visual Studio Code 관련 파일들
-.vscode/                # VSCode에서 사용하는 프로젝트별 설정 디렉토리
-# Docker 관련 파일들
-.dockerignore           # Docker에 의해 생성된 .dockerignore 파일
-Dockerfile              # Docker 이미지 빌드에 사용되는 파일
-docker-compose.yml      # Docker Compose 설정 파일
-# Kubernetes 관련 파일들
-*.k8s.yaml              # Kubernetes 설정 파일 (YAML 포맷)
-*.k8s.yml               # Kubernetes 설정 파일 (YAML 포맷)
-*.helmignore            # Helm 차트에서 사용되는 .helmignore 파일
-# 테스트 커버리지 리포트
-coverage/               # 테스트 커버리지 리포트가 저장되는 디렉토리
-.coverage               # 테스트 커버리지 리포트 파일
-# 추가된 내용 끝
