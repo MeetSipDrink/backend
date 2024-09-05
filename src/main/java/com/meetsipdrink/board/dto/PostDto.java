@@ -10,7 +10,6 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class PostDto {
@@ -60,8 +59,6 @@ public class PostDto {
         private int views;
         private int likeCount;
         private int commentCount;
-        private LocalDateTime createdAt;
-        private LocalDateTime modifiedAt;
         private List<String> imageUrls;
         private List<PostCommentDto.Response> postCommentList;
         private String nickname;
