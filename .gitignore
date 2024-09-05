@@ -161,3 +161,4 @@ server/src/*/*.iml
 
 mysql_data
 src/main/generated/
+.idea
