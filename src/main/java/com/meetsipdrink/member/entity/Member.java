@@ -1,6 +1,9 @@
 package com.meetsipdrink.member.entity;
 
 import com.meetsipdrink.audit.Auditable;
+import com.meetsipdrink.board.entity.Post;
+import com.meetsipdrink.board.entity.PostComment;
+import com.meetsipdrink.board.entity.PostLike;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -60,6 +63,36 @@ public class Member extends Auditable {
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.MERGE)
+    private List<Post> posts = new ArrayList<>();
+
+    public void setPosts(Post post) {
+        posts.add(post);
+        if(post.getMember() != this) {
+            post.setMember(this);
+        }
+    }
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.MERGE)
+    private List<PostLike> postLikes = new ArrayList<>();
+
+    public void setPostLikes(PostLike postLike) {
+        postLikes.add(postLike);
+        if(postLike.getMember() != this) {
+            postLike.setMember(this);
+        }
+    }
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.MERGE)
+    private List<PostComment> postComments = new ArrayList<>();
+
+    public void setPostComments(PostComment postComment) {
+        postComments.add(postComment);
+        if(postComment.getMember() != this) {
+            postComment.setMember(this);
+        }
+    }
 
     public enum memberGender{
         M("남성"),
