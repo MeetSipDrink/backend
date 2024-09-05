@@ -1,4 +1,4 @@
-package com.meetsipdrink.member.entitiy;
+package com.meetsipdrink.member.entity;
 
 import com.meetsipdrink.audit.Auditable;
 import lombok.Getter;
@@ -28,7 +28,7 @@ public class Member extends Auditable {
     private String profileImage;
 
     @Column(name = "member_nickname", nullable = false)
-    private String  ;
+    private String  nickname ;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "member_gender", nullable = false)
