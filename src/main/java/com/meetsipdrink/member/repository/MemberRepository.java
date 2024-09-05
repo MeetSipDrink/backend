@@ -1,6 +1,6 @@
 package com.meetsipdrink.member.repository;
 
-import com.meetsipdrink.member.entitiy.Member;
+import com.meetsipdrink.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
