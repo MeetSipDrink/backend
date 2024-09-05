@@ -27,4 +27,4 @@ jobs:
           docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
           docker build -t spring-cicd .
           docker tag spring-cicd gwanghui/spring-cicd:${GITHUB_SHA::7}
-          docker push gwanghui/spring-cicd:${GITHUB_SHA::7}
+          docker push jh4clover/spring-cicd:${GITHUB_SHA::7}
