@@ -161,12 +161,3 @@ server/src/*/*.iml
 
 mysql_data
 src/main/generated/
-
-### 추가된 내용 ###
-# Mac OS에서 생성되는 파일들
-.DS_Store               # Mac OS에서 자동 생성되는 디렉토리 메타데이터 파일
-.AppleDouble            # Mac OS에서 파일 및 디렉토리 복사를 위한 숨겨진 파일
-.LSOverride             # Mac OS에서 파일 연결 정보
-# Windows에서 생성되는 파일들
-Thumbs.db               # Windows에서 자동 생성되는 이미지 미리보기 캐시 파일
-ehthumbs.db             # Windows에서 자동 생성되는 미디어 파일의 미리보기 파일
