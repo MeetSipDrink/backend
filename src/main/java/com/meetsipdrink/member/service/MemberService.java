@@ -25,7 +25,7 @@ public class MemberService {
     }
 
     public Member updateMember(Member member) {
-        Member findMember = findVerifiedMember(member.getEmail());
+        Member findMember = isvalidMember(member.getMemberId());
         if (!findMember.getNickname().equals(member.getNickname())) {
             verifyNickName(member.getNickname());
             Optional.ofNullable(member.getNickname())
@@ -45,7 +45,7 @@ public class MemberService {
     }
 
 
-    
+
 
     private void verifyExistMember(String email) {
         Optional<Member> member = memberRepository.findByEmail(email);
@@ -63,6 +63,11 @@ public class MemberService {
     }
     private Member findVerifiedMember(String email) {
         return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+    }
+
+    private Member isvalidMember (long memberId)  {
+         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
     }
 
