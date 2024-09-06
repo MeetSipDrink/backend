@@ -147,7 +147,7 @@ public class ChatGPTServiceImpl implements ChatGPTService {
         HttpEntity<CompletionRequestDto> requestEntity = new HttpEntity<>(completionRequestDto, headers);
         ResponseEntity<String> response = chatGPTConfig.restTemplate()
                 .exchange(
-                        "<프롬프트 URL>", // 실제 URL로 변경 필요
+                        "", // 실제 URL로 변경 필요
                         HttpMethod.POST,
                         requestEntity,
                         String.class);
