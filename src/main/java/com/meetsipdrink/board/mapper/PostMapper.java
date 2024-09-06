@@ -11,18 +11,16 @@ import java.util.List;
 public interface PostMapper {
 
     @Mapping(source = "memberId", target = "member.memberId")
-    @Mapping(target = "postImages", qualifiedByName = "postImageToPostImageResponse")
     Post postPostDtoToPost(PostDto.Post requestBody);
 
     @Mapping(source = "memberId", target = "member.memberId")
-    @Mapping(target = "postImages", qualifiedByName = "postImageToPostImageResponse")
     Post postPatchDtoToPost(PostDto.Patch requestBody);
 
     @Mapping(source = "member.memberId", target = "memberId")
     @Mapping(source = "member.nickname", target = "nickname")
     @Mapping(source = "member.profileImage", target = "profileImage")
     @Mapping(target = "postCommentList", qualifiedByName = "postCommentToPostCommentResponse")
-    @Mapping(target = "postImages", qualifiedByName = "postImageToPostImageResponse")
+    @Mapping(target = "postImageList", qualifiedByName = "postImageToPostImageResponse")
     PostDto.Response postToPostResponseDto(Post post);
 
     List<PostDto.Response> postsToPostResponseDtos(List<Post> posts);

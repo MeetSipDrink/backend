@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class PostImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long postImage;
+    private Long postImageId;
 
     @NotNull
     @Column(name = "post_image_URL", nullable = false)
@@ -26,7 +26,7 @@ public class PostImage {
 
     public void setPost(Post post) {
         this.post = post;
-        if(!post.getPostImages().contains(this)) {
+        if(!post.getPostImageList().contains(this)) {
             post.setPostImages(this);
         }
     }
