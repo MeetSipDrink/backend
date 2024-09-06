@@ -59,10 +59,10 @@ public class Post extends Auditable {
     }
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<PostImage> postImages = new ArrayList<>();
+    private List<PostImage> postImageList = new ArrayList<>();
 
     public void setPostImages(PostImage postImage) {
-        postImages.add(postImage);
+        postImageList.add(postImage);
         if(postImage.getPost() != this) {
             postImage.setPost(this);
         }
