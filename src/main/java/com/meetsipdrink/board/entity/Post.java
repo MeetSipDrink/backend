@@ -18,7 +18,7 @@ import java.util.List;
 public class Post extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long postId;
+    private long postId;
 
     @NotNull
     @Column(name = "post_title", nullable = false)

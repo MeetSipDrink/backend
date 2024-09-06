@@ -12,19 +12,6 @@ public class PostImageDto {
     @Getter
     @AllArgsConstructor
     public static class Post {
-        @NotNull
-        private long postId;
-
-        @NotBlank
-        private String imageUrl;
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    public static class Patch {
-        @NotNull
-        private long postId;
 
         @NotBlank
         private String imageUrl;
@@ -35,6 +22,8 @@ public class PostImageDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Response {
+        private long postId;
+        private long postImageId;
         private String imageUrl;
     }
 }

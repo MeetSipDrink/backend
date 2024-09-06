@@ -1,4 +1,12 @@
 package com.meetsipdrink.board.repository;
 
-public interface PostLikeRepository {
+import com.meetsipdrink.board.entity.Post;
+import com.meetsipdrink.board.entity.PostLike;
+import com.meetsipdrink.member.entity.Member;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface PostLikeRepository extends JpaRepository<PostLike, Long> {
+    Optional<PostLike> findAllByMemberAndPost(Member member, Post post);
 }

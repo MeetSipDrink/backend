@@ -27,6 +27,9 @@ public class PostCommentDto {
     @AllArgsConstructor
     public static class Patch {
         @NotNull
+        private long postCommentId;
+
+        @NotNull
         private long memberId;
 
         @NotBlank
@@ -43,7 +46,7 @@ public class PostCommentDto {
         private long memberId;
         private long postId;
         private long postCommentId;
-        private long parentCommentId;
+        private Long parentCommentId;
         private String content;
         private String nickname;
         private String profileImage;
