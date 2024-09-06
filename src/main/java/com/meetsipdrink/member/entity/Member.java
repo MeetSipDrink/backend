@@ -4,6 +4,7 @@ import com.meetsipdrink.audit.Auditable;
 import com.meetsipdrink.board.entity.Post;
 import com.meetsipdrink.board.entity.PostComment;
 import com.meetsipdrink.board.entity.PostLike;
+import com.meetsipdrink.friend.entitiy.Friend;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -62,11 +63,17 @@ public class Member extends Auditable {
     @Column (name = "member_ban_count")
     private Integer banCount = 0 ;
 
+    @OneToMany(mappedBy = "member")
+    private List<Friend> friends = new ArrayList<>();
+
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.MERGE)
     private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Friend> members = new ArrayList<>();
 
     public void setPosts(Post post) {
         posts.add(post);
@@ -95,10 +102,23 @@ public class Member extends Auditable {
         }
     }
 
+    public void addFriend(Friend friend) {
+        this.friends.add(friend);
+        if (friend.getMember() != this) {
+            friend.setMember(this);
+        }
+    }
+
+    public void addMember(Friend friend) {
+        this.members.add(friend);
+        if (friend.getMember() != this) {
+            friend.setMember(this);
+        }
+    }
+
     public enum memberGender{
         M("남성"),
         F("여성");
-
 
         @Getter
         private String gender;

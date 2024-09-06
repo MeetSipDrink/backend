@@ -7,6 +7,9 @@ import com.meetsipdrink.member.entity.Member;
 import com.meetsipdrink.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -57,6 +60,25 @@ public class MemberService {
     }
 
 
+    public Member findMember(long memberId) {
+        return isvalidMember(memberId);
+    }
+
+
+    public Page<Member> findMembers(int page, int size) {
+        return memberRepository.findAll(PageRequest.of(page, size,
+                Sort.by("memberId").descending()));
+    }
+
+
+    public void deleteMember (long memberId) {
+        Member member = findMember(memberId);
+        member.setStatus(Member.memberStatus.isInactive);
+        member.setNickname("탈퇴한회원" + memberId);
+        memberRepository.save(member);
+    }
+
+
 
 
     private void verifyExistMember(String email) {
@@ -67,7 +89,7 @@ public class MemberService {
     }
 
 
-    private void verifyNickName(String nickName) {
+    public void verifyNickName(String nickName) {
         Optional<Member> member = memberRepository.findByNickname(nickName);
         if(member.isPresent()) {
             throw new BusinessLogicException(ExceptionCode.NICKNAME_EXISTS);

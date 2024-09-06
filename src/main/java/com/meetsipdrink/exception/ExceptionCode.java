@@ -23,7 +23,6 @@ public enum ExceptionCode {
     MEMBER_EXISTS(409,"Member exists"),
     PHONE_EXISTS(409, "Phone exists"),
     NICKNAME_EXISTS(409, "NickName exists"),
-
     //friend 관련
     REQUEST_NOT_FOUND(404, "Request Not Found"),
 
