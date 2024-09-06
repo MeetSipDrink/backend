@@ -19,7 +19,7 @@ public class PostCommentDto {
         @NotBlank
         private String content;
 
-        private long parentCommentId;
+        private Long parentCommentId;
     }
 
     @Getter
@@ -32,7 +32,7 @@ public class PostCommentDto {
         @NotBlank
         private String content;
 
-        private long parentCommentId;
+        private Long parentCommentId;
     }
 
     @Getter
@@ -44,7 +44,7 @@ public class PostCommentDto {
         private long postId;
         private long postCommentId;
         private long parentCommentId;
-        private String title;
+        private String content;
         private String nickname;
         private String profileImage;
     }

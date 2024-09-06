@@ -1,7 +1,6 @@
 package com.meetsipdrink.board.dto;
 
 
-import com.meetsipdrink.audit.Auditable;
 import com.meetsipdrink.board.entity.PostLike;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,7 +26,6 @@ public class PostDto {
         @NotBlank
         private String content;
 
-        private List<String> imageUrls;
     }
 
     @Getter
@@ -36,23 +34,19 @@ public class PostDto {
         @NotNull
         private long memberId;
 
-        @NotNull
-        private long postId;
-
         @NotBlank
         private String title;
 
         @NotBlank
         private String content;
 
-        private List<String> imageUrls;
     }
 
     @Getter
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class Response extends Auditable {
+    public static class Response {
         private long postId;
         private long memberId;
         private String title;
@@ -62,7 +56,7 @@ public class PostDto {
         private int commentCount;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
-        private List<String> imageUrls;
+        private List<PostImageDto.Response> postImageList;
         private List<PostCommentDto.Response> postCommentList;
         private String nickname;
         private String profileImage;
