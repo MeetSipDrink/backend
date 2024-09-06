@@ -1,4 +1,7 @@
 package com.meetsipdrink.board.repository;
 
-public interface PostCommentRepository {
+import com.meetsipdrink.board.entity.PostComment;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PostCommentRepository extends JpaRepository<PostComment, Long> {
 }
