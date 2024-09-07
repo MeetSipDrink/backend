@@ -1,18 +1,19 @@
 package com.meetsipdrink.bot.service;
 
-import com.meetsipdrink.bot.dto.CompletionRequestDto;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-
 @Service
-public interface ChatGPTService {
-
-    List<Map<String, Object>> modelList();
-
-    Map<String, Object> prompt(CompletionRequestDto completionRequestDto);
-
-    Map<String, Object> isValidModel(String modelName);
-
+@Slf4j
+@RequiredArgsConstructor
+public class ChatGPTService {
+    public String drinkPrompt(String prompt) {
+        return
+                "이 문장이 끝난 뒤에 내용 : 안에 있는 단어나 문장에 대하여 공감하는 분위기로 술을 추천해주고 " +
+                        "그 술에 대하여 자세히 설명해주면 좋겠고 " +
+                        "특정 문맥이 없는 내용도 그와 관련하여 추천해주고 " +
+                        "내 명령에 대해 설명하지말고 " +
+                        "존댓말로 이야기 해줘 내용 :" + prompt;
+    }
 }

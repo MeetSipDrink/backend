@@ -10,12 +10,16 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class ChatGPTConfig {
 
-    @Value("${openai.secret-key}")
+    @Value("${openai.api-key}")
     private String secretKey;
 
     @Bean
     public RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getInterceptors().add(((request, body, execution) -> {
+            request.getHeaders().add("Authorization", "Bearer " + secretKey);
+            return execution.execute(request, body);
+        }));
         return restTemplate;
     }
 
