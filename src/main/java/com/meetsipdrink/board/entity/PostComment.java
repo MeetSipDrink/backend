@@ -18,7 +18,7 @@ import java.util.List;
 public class PostComment extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long postCommentId;
+    private long postCommentId;
 
     @NotNull
     @Column(name = "post_comment_content", nullable = false)

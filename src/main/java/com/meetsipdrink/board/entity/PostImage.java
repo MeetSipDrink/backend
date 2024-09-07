@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class PostImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long postImageId;
+    private long postImageId;
 
     @NotNull
     @Column(name = "post_image_URL", nullable = false)
