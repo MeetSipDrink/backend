@@ -47,7 +47,7 @@ public class PostLikeService {
     }
 
     public boolean findLike(long memberId, long postId) {
-        Optional<PostLike> optionalPostLike = postLikeRepository.findPostLikeByMemberIdAndPostPostId(memberId, postId);
+        Optional<PostLike> optionalPostLike = postLikeRepository.findPostLikeByMemberMemberIdAndPostPostId(memberId, postId);
         return optionalPostLike.isPresent();
     }
 }
