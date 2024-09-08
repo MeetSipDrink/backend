@@ -10,16 +10,22 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface FriendMapper {
-FriendDto.Response friendToResponse (Friend friend);
-default List<FriendDto.Response> friendsToResponse (List<Member> friends){
-    List<FriendDto.Response> result = new ArrayList<>();
-    for (Member member : friends) {
-        FriendDto.Response response = new FriendDto.Response();
-        response.setFriendNickName(member.getNickname());
-        response.setFriendGender(member.getGender().getGender());
-        response.setGetFriendProfileImage(member.getProfileImage());
-    }
-    return  result;
-}
 
+    FriendDto.ResponseDto friendToResponse(Friend friend);
+
+    default List<FriendDto.ResponseDto> friendsToResponse(List<Member> friends) {
+        List<FriendDto.ResponseDto> result = new ArrayList<>();
+        for (Member member : friends) {
+            FriendDto.ResponseDto response = new FriendDto.ResponseDto();
+            response.setFriendNickName(member.getNickname());
+            response.setFriendGender(member.getGender().getGender());
+            response.setGetFriendProfileImage(member.getProfileImage());
+            response.setFriendAlcoholType1(member.getAlcoholType1());
+            response.setFriendAlcoholType2(member.getAlcoholType2());
+            response.setFriendAlcoholType3(member.getAlcoholType3());
+
+            result.add(response);
+        }
+        return result;
+    }
 }

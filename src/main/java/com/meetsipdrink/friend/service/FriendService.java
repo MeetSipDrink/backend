@@ -6,104 +6,137 @@ import com.meetsipdrink.friend.entitiy.Friend;
 import com.meetsipdrink.friend.repository.FriendRepository;
 import com.meetsipdrink.member.entity.Member;
 import com.meetsipdrink.member.repository.MemberRepository;
-import com.meetsipdrink.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class FriendService {
-    public final FriendRepository repository;
-    public final MemberRepository memberRepository;
-    public final FriendRepository friendRepository;
-    public final MemberService memberService;
+    private final FriendRepository friendRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
-    public void addFriend(String memberNickname, String friendNickname) {
-        Member member = memberRepository.findByNickname(memberNickname)
+    public void addFriend(long requesterId, long recipientId) {
+        Member requester = memberRepository.findById(requesterId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-        Member friendMember = memberRepository.findByNickname(friendNickname)
-                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-
-        Friend friend = new Friend();
-        friend.setFriend(friendMember);
-        friend.setMember(member);
-        friend.setFriendStatus(Friend.Status.PENDING);
-        friendRepository.save(friend);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Member> getsFriends(String memberNickname, Friend.Status status) {
-        Member findmember = memberRepository.findByNickname(memberNickname)
+        Member recipient = memberRepository.findById(recipientId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
-        List<Friend> friends = friendRepository.findByMemberAndFriendStatus(findmember, status);
-        List<Member> members = new ArrayList<>();
-        for (Friend friend : friends) {
-            members.add(friend.getFriend());
+        // 기존에 친구 요청이 있는지 확인
+        Friend existingRequest = friendRepository.findByRequesterAndRecipient(requester, recipient);
+        if (existingRequest != null) {
+            throw new BusinessLogicException(ExceptionCode.FRIEND_REQUEST_ALREADY_EXISTS);
         }
 
-        return members;
+        // 상대방이 이미 친구 요청을 보냈는지 확인
+        Friend reverseRequest = friendRepository.findByRequesterAndRecipient(recipient, requester);
+        if (reverseRequest != null) {
+            // 상대방이 이미 친구 요청을 보낸 경우, 두 요청 모두 ACCEPTED 상태로 변경
+            reverseRequest.setFriendStatus(Friend.Status.ACCEPTED);
+            friendRepository.save(reverseRequest);
+
+            Friend friendRequest = new Friend();
+            friendRequest.setRequester(requester);
+            friendRequest.setRecipient(recipient);
+            friendRequest.setFriendStatus(Friend.Status.ACCEPTED);
+            friendRepository.save(friendRequest);
+        } else {
+            // 새로운 친구 요청 생성
+            Friend friendRequest = new Friend();
+            friendRequest.setRequester(requester);
+            friendRequest.setRecipient(recipient);
+            friendRequest.setFriendStatus(Friend.Status.PENDING);
+            friendRepository.save(friendRequest);
+        }
     }
 
-
-
     @Transactional
-    public void acceptFriendRequest(long friendId, String memberNickname) {
-        Optional<Friend> optionalFriend = friendRepository.findById(friendId);
-        Friend friend = optionalFriend.orElseThrow(() ->
-                new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-        friend.setFriendStatus(Friend.Status.ACCEPTED);
-        friendRepository.save(friend);
-        Friend reverseFriend = new Friend();
-        reverseFriend.setMember(friend.getFriend());
-        reverseFriend.setFriend(friend.getFriend());
-        reverseFriend.setFriendStatus(Friend.Status.ACCEPTED);
-        friendRepository.save(reverseFriend);
+    public void acceptFriendRequest(long friendId, long recipientId) {
+        Member member = memberRepository.findById(recipientId)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
+        Friend friendRequest = friendRepository.findById(friendId)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.FRIEND_REQUEST_NOT_FOUND));
+
+        if (!friendRequest.getRecipient().equals(member)) {
+            throw new BusinessLogicException(ExceptionCode.NOT_FRIEND_RECIPIENT);
+        }
+
+        friendRequest.setFriendStatus(Friend.Status.ACCEPTED);
+        friendRepository.save(friendRequest);
+
+        // 역으로 친구 요청을 생성
+        Friend reverseFriendRequest = new Friend();
+        reverseFriendRequest.setRequester(member);
+        reverseFriendRequest.setRecipient(friendRequest.getRequester());
+        reverseFriendRequest.setFriendStatus(Friend.Status.ACCEPTED);
+        friendRepository.save(reverseFriendRequest);
     }
 
-    //친구 거절
     @Transactional
-    public void rejectFriendRequest(String memberNickname, String friendNickname) {
-        Member member = memberRepository.findByNickname(memberNickname)
+    public void rejectFriendRequest(long requesterId, long recipientId) {
+        Member requester = memberRepository.findById(requesterId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-        Member friendMember = memberRepository.findByNickname(friendNickname)
+        Member recipient = memberRepository.findById(recipientId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-        Friend friendRequest = friendRepository.findByMemberAndFriend(member, friendMember)
-                .orElseThrow(() -> new IllegalArgumentException("친구요청 찾을 수 없음"));
+
+        Friend friendRequest = friendRepository.findByRequesterAndRecipient(requester, recipient);
+        if (friendRequest == null) {
+            throw new BusinessLogicException(ExceptionCode.FRIEND_REQUEST_NOT_FOUND);
+        }
 
         friendRepository.delete(friendRequest);
+    }
 
+    @Transactional
+    public void removeFriend(long requesterId, long recipientId) {
+        Member requester = memberRepository.findById(requesterId)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        Member recipient = memberRepository.findById(recipientId)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+
+        Friend friendRequest = friendRepository.findByRequesterAndRecipient(requester, recipient);
+        if (friendRequest != null) {
+            friendRepository.delete(friendRequest);
+        }
+        Friend reverseFriendRequest = friendRepository.findByRequesterAndRecipient(recipient, requester);
+        if (reverseFriendRequest != null) {
+            friendRepository.delete(reverseFriendRequest);
+        }
     }
 
 
-    public Friend getFriend(String memberNickname, String friendNickname) {
-        Member member = memberRepository.findByNickname(memberNickname)
-                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-        Member friend = memberRepository.findByEmail(friendNickname)
+    @Transactional(readOnly = true)
+    public List<Member> getFriends(long memberId, Friend.Status status) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
-        return friendRepository.findByMemberAndFriend(member, friend)
-                .orElseThrow(() -> new IllegalArgumentException("친구요청을 찾을수 없음"));
+        List<Friend> friends = friendRepository.findByRequesterAndFriendStatus(member, status);
+        List<Member> friendMembers = new ArrayList<>();
+        for (Friend friend : friends) {
+            friendMembers.add(friend.getRecipient());
+        }
+
+        return friendMembers;
     }
-    @org.springframework.transaction.annotation.Transactional
-    public Page<Friend> getFriends(int page, int size) {
-        return friendRepository.findAll(PageRequest.of(page, size,
-                Sort.by("memberId").descending()));
+
+//특정 회원이랑 비교 근데 없어도 될 듯
+    @Transactional(readOnly = true)
+    public Friend getFriend(long memberId, long friendId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        Member friend = memberRepository.findById(friendId)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+
+        Friend friendRequest = friendRepository.findByRequesterAndRecipient(member, friend);
+        if (friendRequest == null) {
+            throw new BusinessLogicException(ExceptionCode.FRIEND_REQUEST_NOT_FOUND);
+        }
+
+        return friendRequest;
     }
 }
-
-
-
-
-
-

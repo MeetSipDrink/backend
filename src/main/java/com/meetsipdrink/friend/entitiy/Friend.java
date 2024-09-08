@@ -1,6 +1,6 @@
 package com.meetsipdrink.friend.entitiy;
 
-
+import com.meetsipdrink.audit.Auditable;
 import com.meetsipdrink.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,48 +11,51 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "friend", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"requester_nickname", "recipient_nickname"})
+        @UniqueConstraint(columnNames = {"requester_Id", "recipient_Id"})
 })
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
-public class Friend {
+public class Friend extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long friendId;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "requester_nickname")
-    private Member member;
+    @ManyToOne
+    @JoinColumn(name = "requester_id")
+    private Member requester;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "recipient_nickname")
-    private Member friend;
+    @ManyToOne
+    @JoinColumn(name = "recipient_id")
+    private Member recipient;
 
-    public void setMember(Member member) {
-        this.member = member;
-        if (!member.getFriends().contains(this)) {
-            member.addFriend(this);
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status friendStatus = Status.PENDING;
+
+    public void setRequester(Member requester) {
+        this.requester = requester;
+        if (!requester.getSentFriendRequests().contains(this)) {
+            requester.addSentFriendRequest(this);
         }
     }
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @Column(nullable = false)
-    private LocalDateTime modifiedAt = LocalDateTime.now();
-
-    @Enumerated(value = EnumType.STRING)
-    @Column(nullable = false)
-    private Status friendStatus = Status.PENDING;
+    public void setRecipient(Member recipient) {
+        this.recipient = recipient;
+        if (!recipient.getReceivedFriendRequests().contains(this)) {
+            recipient.addReceivedFriendRequest(this);
+        }
+    }
 
     public enum Status {
         PENDING("대기중"),
         ACCEPTED("요청 수락"),
-        REJECTED("요청 거절");
-
+        REJECTED("요청 거절"),
+        DISCONNECTED("친구 끊김");
         @Getter
-        private String status;
+        private final String status;
 
         Status(String status) {
             this.status = status;

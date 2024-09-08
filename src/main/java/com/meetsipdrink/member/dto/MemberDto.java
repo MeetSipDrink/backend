@@ -54,12 +54,12 @@ public class MemberDto {
     @NoArgsConstructor
     public static class Patch {
 
-        //핸드폰 번호 따로 받아야 하는 지
-        @NotNull(message = "비밀번호는 필수 항목입니다.")
-        @Size(min = 8, max = 20, message = "비밀번호는 8자에서 20자 사이여야 합니다.")
-        @Pattern(regexp = "^[a-zA-Z0-9!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?`~]+$",
-                message = "비밀번호는 알파벳, 숫자, 특수문자만 포함할 수 있습니다.")
-        private String password;
+//        //핸드폰 번호 따로 받아야 하는 지
+//        @NotNull(message = "비밀번호는 필수 항목입니다.")
+//        @Size(min = 8, max = 20, message = "비밀번호는 8자에서 20자 사이여야 합니다.")
+//        @Pattern(regexp = "^[a-zA-Z0-9!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?`~]+$",
+//                message = "비밀번호는 알파벳, 숫자, 특수문자만 포함할 수 있습니다.")
+//        private String password;
 
         @Pattern(regexp = "^[a-zA-Z0-9가-힣]{2,8}$",
                 message = "특수문자 제외 2자이상 8자 이하로 입력해주세요.")
