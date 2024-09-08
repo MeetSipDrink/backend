@@ -24,7 +24,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthorityUtils authorityUtils;
 
-    public Member ceateMember(Member member) {
+    public Member createMember (Member member) {
         verifyExistMember(member.getEmail());
         verifyNickName(member.getNickname());
 
