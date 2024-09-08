@@ -14,7 +14,10 @@ public enum ExceptionCode {
 
 
     //board 관련
+    BOARD_UNAUTHORIZED_ACTION(403, "Board_Unauthorized_Action"),
     BOARD_NOT_FOUND(404,"Board Not Found"),
+    BOARD_COMMENT_NOT_FOUND(404,"Board_Comment Not Found"),
+    BOARD_IMAGE_NOT_FOUND(404,"Board_Image Not Found"),
     BOARD_EXISTS(409,"Board exists"),
     INVALID_BOARD_TYPE(400,"INVALID_BOARD_TYPE"),
 
