@@ -1,4 +1,4 @@
-package com.meetsipdrink.board.dto;
+package com.meetsipdrink.notice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 
-public class PostImageDto {
+public class NoticeImageDto {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
@@ -21,8 +21,8 @@ public class PostImageDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Response {
-        private long postId;
-        private long postImageId;
+        private long noticeId;
+        private long noticeImageId;
         private String imageUrl;
     }
 }
