@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 public class PostCommentDto {
     @Getter
@@ -37,10 +38,12 @@ public class PostCommentDto {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class Response extends Auditable {
+    public static class Response {
         private long memberId;
         private long postId;
         private long postCommentId;
+        private LocalDateTime createdAt;
+        private LocalDateTime modifiedAt;
         private Long parentCommentId;
         private String content;
         private String nickname;
