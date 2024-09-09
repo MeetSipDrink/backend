@@ -11,8 +11,8 @@ import javax.validation.constraints.NotNull;
 public class PostImageDto {
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Post {
-
         @NotBlank
         private String imageUrl;
     }

@@ -12,11 +12,10 @@ import java.util.List;
 public interface PostCommentMapper {
 
     @Mapping(source = "memberId", target = "member.memberId")
-    @Mapping(source = "parentCommentId", target = "parentComment.postCommentId", ignore = true)
+    @Mapping(target = "parentComment", expression = "java(requestBody.getParentCommentId() != null ? new PostComment(requestBody.getParentCommentId()) : null)")
     PostComment postCommentPostDtoToPostComment(PostCommentDto.Post requestBody);
 
     @Mapping(source = "memberId", target = "member.memberId")
-    @Mapping(source = "parentCommentId", target = "parentComment.postCommentId", ignore = true)
     PostComment postCommentPatchDtoToPostComment(PostCommentDto.Patch requestBody);
 
     @Mapping(source = "member.memberId", target = "memberId")
@@ -29,3 +28,4 @@ public interface PostCommentMapper {
     @Named("postCommentToPostCommentResponse")
     List<PostCommentDto.Response> postCommentsToPostCommentResponseDtos(List<PostComment> postComments);
 }
+

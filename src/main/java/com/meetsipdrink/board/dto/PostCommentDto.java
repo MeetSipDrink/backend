@@ -27,15 +27,10 @@ public class PostCommentDto {
     @AllArgsConstructor
     public static class Patch {
         @NotNull
-        private long postCommentId;
-
-        @NotNull
         private long memberId;
 
         @NotBlank
         private String content;
-
-        private Long parentCommentId;
     }
 
     @Getter

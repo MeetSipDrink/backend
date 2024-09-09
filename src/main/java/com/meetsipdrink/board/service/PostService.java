@@ -34,30 +34,25 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public Post updatePost(Post post, long memberId) {
-        Post findPost = findVerifiedPost(post.getPostId());
+    public Post updatePost(long postId, Post post) {
+            Post findPost = findVerifiedPost(postId);
 
-        if (findPost.getMember().getMemberId() != memberId) {
-            throw new BusinessLogicException(ExceptionCode.BOARD_UNAUTHORIZED_ACTION);
-        }
+            if (findPost.getMember().getMemberId() != post.getMember().getMemberId()) {
+                throw new BusinessLogicException(ExceptionCode.BOARD_UNAUTHORIZED_ACTION);
+            }
 
-        Optional.ofNullable(post.getTitle())
-                .ifPresent(title -> findPost.setTitle(title));
-        Optional.ofNullable(post.getContent())
-                .ifPresent(content -> findPost.setContent(content));
+            Optional.ofNullable(post.getTitle())
+                    .ifPresent(title -> findPost.setTitle(title));
+            Optional.ofNullable(post.getContent())
+                    .ifPresent(content -> findPost.setContent(content));
 
-        return postRepository.save(findPost);
+            return postRepository.save(findPost);
     }
 
     public synchronized Post findPost(long postId) {
         Post findPost = findVerifiedPost(postId);
         findPost.setViews(findPost.getViews() + 1);
         return findPost;
-    }
-
-    public Page<Post> findPopularPosts(int page, int size) {
-        return postRepository.findAll(PageRequest.of(page, size,
-                Sort.by("likeCount").descending()));
     }
 
     public Page<Post> findPostsSort(int page, int size, Sort sort) {
