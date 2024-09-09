@@ -6,8 +6,8 @@ import com.meetsipdrink.board.repository.PostImageRepository;
 import com.meetsipdrink.exception.BusinessLogicException;
 import com.meetsipdrink.exception.ExceptionCode;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Transactional

@@ -9,8 +9,8 @@ import com.meetsipdrink.exception.ExceptionCode;
 import com.meetsipdrink.member.entity.Member;
 import com.meetsipdrink.member.service.MemberService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,6 +66,7 @@ public class PostCommentService {
         return postCommentRepository.save(findPostComment);
     }
 
+    @Transactional(readOnly = true)
     public List<PostComment> findPostComments() {
         return postCommentRepository.findAll();
     }

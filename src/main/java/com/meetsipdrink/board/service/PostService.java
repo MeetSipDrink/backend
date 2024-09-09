@@ -11,8 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Transactional
@@ -55,6 +55,7 @@ public class PostService {
         return findPost;
     }
 
+    @Transactional(readOnly = true)
     public Page<Post> findPostsSort(int page, int size, Sort sort) {
         Pageable pageable = PageRequest.of(page, size, sort);
         return postRepository.findAll(pageable);
