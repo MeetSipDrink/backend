@@ -6,14 +6,17 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ExceptionCode {
 
-    // 추가해야 할 에러 코드
+    // 추가해야할 에러 코드
     NOT_MATCH_HOST_MEMBER(404, "NOT_MATCH_HOST_MEMBER"),
     REQUEST_ALREADY_RECEIVED_FROM_OTHER_PARTY(202, "REQUEST_ALREADY_RECEIVED_FROM_OTHER_PARTY"),
     ACCESS_DENIED(403, "ACCESS_DENIED"),
     CHATROOM_NOT_FOUND(404, "CHATROOM_NOT_FOUND"),
 
     // board 관련
+    BOARD_UNAUTHORIZED_ACTION(403, "Board_Unauthorized_Action"),
     BOARD_NOT_FOUND(404, "Board Not Found"),
+    BOARD_COMMENT_NOT_FOUND(404, "Board_Comment Not Found"),
+    BOARD_IMAGE_NOT_FOUND(404, "Board_Image Not Found"),
     BOARD_EXISTS(409, "Board exists"),
     INVALID_BOARD_TYPE(400, "INVALID_BOARD_TYPE"),
 
@@ -28,6 +31,7 @@ public enum ExceptionCode {
     FRIEND_REQUEST_ALREADY_EXISTS(409, "Friend Request Already Exists"),
     NOT_FRIEND_RECIPIENT(403, "Not a friend recipient"),
     FRIEND_REQUEST_NOT_FOUND(403, "친구요청을 찾을 수 없습니다"),
+    INVALID_MEMBER(400, "INVALID_MEMBER"),
     // 친구 요청 관련
     UNAUTHORIZED_ACCESS(404, "친구요청을 없습니다."),
 
@@ -37,8 +41,16 @@ public enum ExceptionCode {
 
     // 토큰 인증 관련
     UNAUTHORIZED_MEMBER(401, "권한이 없는 멤버입니다."),
-    TOKEN_INVALID(404, "토큰값이 유효하지 않습니다.");
+    TOKEN_INVALID(404, "토큰값이 유효하지 않습니다."),
 
+    // 룰렛 관련
+    ROULETTE_EXISTS(409, "roulette exists"),
+    ROULETTE_NOT_FOUND(404, "Roulette Not Found"),
+
+    // 차단 관련
+    BLOCKING_MEMBER_NOT_FOUND(404, "차단할 멤버를 찾을 수 없습니다."),
+    BANNED_MEMBER_NOT_FOUND(404, "차단당할 멤버를 찾을 수 없습니다."),
+    BAN_RECORD_NOT_FOUND(404, "차단 기록이 없습니다.");
     @Getter
     private int statusCode;
 

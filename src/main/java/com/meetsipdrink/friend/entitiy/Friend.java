@@ -9,6 +9,9 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+import static javax.persistence.CascadeType.*;
+import static javax.persistence.EnumType.*;
+
 @Entity
 @Table(name = "friend", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"requester_Id", "recipient_Id"})
@@ -22,16 +25,16 @@ public class Friend extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long friendId;
 
-    @ManyToOne
+    @ManyToOne(cascade = ALL)
     @JoinColumn(name = "requester_id")
     private Member requester;
 
-    @ManyToOne
+    @ManyToOne(cascade = ALL)
     @JoinColumn(name = "recipient_id")
     private Member recipient;
 
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
     @Column(nullable = false)
     private Status friendStatus = Status.PENDING;
 
@@ -56,7 +59,6 @@ public class Friend extends Auditable {
         DISCONNECTED("친구 끊김");
         @Getter
         private final String status;
-
         Status(String status) {
             this.status = status;
         }

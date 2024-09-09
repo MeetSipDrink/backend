@@ -1,6 +1,7 @@
 package com.meetsipdrink.member.entity;
 
 import com.meetsipdrink.audit.Auditable;
+import com.meetsipdrink.ban.entity.Ban;
 import com.meetsipdrink.board.entity.Post;
 import com.meetsipdrink.board.entity.PostComment;
 import com.meetsipdrink.board.entity.PostLike;
@@ -84,6 +85,9 @@ public class Member extends Auditable {
     @OneToMany(mappedBy = "member", cascade = CascadeType.MERGE)
     private List<PostComment> postComments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "blockingMember", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ban> bans = new ArrayList<>();
+
     public void addSentFriendRequest(Friend friend) {
         if (!sentFriendRequests.contains(friend)) {
             sentFriendRequests.add(friend);
@@ -122,6 +126,22 @@ public class Member extends Auditable {
             postComment.setMember(this);
         }
     }
+
+    public void addBan(Ban ban) {
+        bans.add(ban);
+        if (ban.getBlockingMember() != this) {
+            ban.setBlockingMember(this);
+        }
+    }
+
+    public void removeBan(Ban ban) {
+        bans.remove(ban);
+        if (ban.getBlockingMember() == this) {
+            ban.setBlockingMember(null);
+        }
+    }
+
+
 
     public enum memberGender {
         M("남성"),

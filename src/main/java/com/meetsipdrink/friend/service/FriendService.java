@@ -15,24 +15,22 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class FriendService {
     private final FriendRepository friendRepository;
     private final MemberRepository memberRepository;
 
-    @Transactional
     public void addFriend(long requesterId, long recipientId) {
         Member requester = memberRepository.findById(requesterId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
         Member recipient = memberRepository.findById(recipientId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
-        // 기존에 친구 요청이 있는지 확인
         Friend existingRequest = friendRepository.findByRequesterAndRecipient(requester, recipient);
         if (existingRequest != null) {
             throw new BusinessLogicException(ExceptionCode.FRIEND_REQUEST_ALREADY_EXISTS);
         }
 
-        // 상대방이 이미 친구 요청을 보냈는지 확인
         Friend reverseRequest = friendRepository.findByRequesterAndRecipient(recipient, requester);
         if (reverseRequest != null) {
             // 상대방이 이미 친구 요청을 보낸 경우, 두 요청 모두 ACCEPTED 상태로 변경
@@ -45,7 +43,6 @@ public class FriendService {
             friendRequest.setFriendStatus(Friend.Status.ACCEPTED);
             friendRepository.save(friendRequest);
         } else {
-            // 새로운 친구 요청 생성
             Friend friendRequest = new Friend();
             friendRequest.setRequester(requester);
             friendRequest.setRecipient(recipient);
@@ -54,7 +51,6 @@ public class FriendService {
         }
     }
 
-    @Transactional
     public void acceptFriendRequest(long friendId, long recipientId) {
         Member member = memberRepository.findById(recipientId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
@@ -69,7 +65,6 @@ public class FriendService {
         friendRequest.setFriendStatus(Friend.Status.ACCEPTED);
         friendRepository.save(friendRequest);
 
-        // 역으로 친구 요청을 생성
         Friend reverseFriendRequest = new Friend();
         reverseFriendRequest.setRequester(member);
         reverseFriendRequest.setRecipient(friendRequest.getRequester());
@@ -77,7 +72,6 @@ public class FriendService {
         friendRepository.save(reverseFriendRequest);
     }
 
-    @Transactional
     public void rejectFriendRequest(long requesterId, long recipientId) {
         Member requester = memberRepository.findById(requesterId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
@@ -88,17 +82,14 @@ public class FriendService {
         if (friendRequest == null) {
             throw new BusinessLogicException(ExceptionCode.FRIEND_REQUEST_NOT_FOUND);
         }
-
         friendRepository.delete(friendRequest);
     }
 
-    @Transactional
     public void removeFriend(long requesterId, long recipientId) {
         Member requester = memberRepository.findById(requesterId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
         Member recipient = memberRepository.findById(recipientId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-
         Friend friendRequest = friendRepository.findByRequesterAndRecipient(requester, recipient);
         if (friendRequest != null) {
             friendRepository.delete(friendRequest);
@@ -108,7 +99,6 @@ public class FriendService {
             friendRepository.delete(reverseFriendRequest);
         }
     }
-
 
     @Transactional(readOnly = true)
     public List<Member> getFriends(long memberId, Friend.Status status) {
@@ -120,7 +110,6 @@ public class FriendService {
         for (Friend friend : friends) {
             friendMembers.add(friend.getRecipient());
         }
-
         return friendMembers;
     }
 
@@ -136,7 +125,6 @@ public class FriendService {
         if (friendRequest == null) {
             throw new BusinessLogicException(ExceptionCode.FRIEND_REQUEST_NOT_FOUND);
         }
-
         return friendRequest;
     }
 }

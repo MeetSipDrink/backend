@@ -8,9 +8,6 @@ import lombok.Setter;
 
 
 public class FriendDto {
-
-
-
     @Getter
     @Setter
     @NoArgsConstructor
@@ -23,7 +20,6 @@ public class FriendDto {
         private String FriendAlcoholType3;
     }
 
-
     @Getter
     @Setter
     @NoArgsConstructor
@@ -31,9 +27,6 @@ public class FriendDto {
         private long requesterId;
         private long recipientId;
     }
-
-
-
 
     @Getter
     @Setter
