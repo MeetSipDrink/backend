@@ -46,6 +46,10 @@ public class PostComment extends Auditable {
         }
     }
 
+    public PostComment(Long postCommentId) {
+        this.postCommentId = postCommentId;
+    }
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_comment_id")
     private PostComment parentComment;
