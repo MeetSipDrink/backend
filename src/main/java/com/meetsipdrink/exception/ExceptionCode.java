@@ -22,6 +22,11 @@ public enum ExceptionCode {
     BOARD_EXISTS(409,"Board exists"),
     INVALID_BOARD_TYPE(400,"INVALID_BOARD_TYPE"),
 
+    //notice 관련
+    NOTICE_UNAUTHORIZED_ACTION(403, "Notice_Unauthorized_Action"),
+    NOTICE_NOT_FOUND(404, "Notice Not Found"),
+    NOTICE_IMAGE_NOT_FOUND(404,"Notice_Image Not Found"),
+
     //member 관련
     MEMBER_NOT_FOUND(404,"Member Not Found"),
     MEMBER_EXISTS(409,"Member exists"),

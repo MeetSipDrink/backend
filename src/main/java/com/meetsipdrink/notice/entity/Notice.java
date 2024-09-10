@@ -32,6 +32,9 @@ public class Notice extends Auditable {
     @Column(name = "notice_views")
     private int views = 0;
 
+    @ElementCollection
+    private List<String> imageUrls = new ArrayList<>();
+
     @OneToOne
     @JoinColumn(name = "MEMBER_ID")
     @JsonBackReference
@@ -44,13 +47,4 @@ public class Notice extends Auditable {
         }
     }
 
-    @OneToMany(mappedBy = "notice", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<NoticeImage> noticeImageList = new ArrayList<>();
-
-    public void setNoticeImages(NoticeImage noticeImage) {
-        noticeImageList.add(noticeImage);
-        if(noticeImage.getNotice() != this) {
-            noticeImage.setNotice(this);
-        }
-    }
 }

@@ -11,8 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Transactional
@@ -45,6 +45,19 @@ public class PostService {
                     .ifPresent(title -> findPost.setTitle(title));
             Optional.ofNullable(post.getContent())
                     .ifPresent(content -> findPost.setContent(content));
+            Optional.ofNullable(post.getImageUrl1())
+                    .ifPresent(imageUrl1 -> findPost.setImageUrl1(imageUrl1));
+            Optional.ofNullable(post.getImageUrl2())
+                    .ifPresent(imageUrl2 -> findPost.setImageUrl1(imageUrl2));
+            Optional.ofNullable(post.getImageUrl1())
+                    .ifPresent(imageUrl3 -> findPost.setImageUrl1(imageUrl3));
+            Optional.ofNullable(post.getImageUrl1())
+                    .ifPresent(imageUrl4 -> findPost.setImageUrl1(imageUrl4));
+            Optional.ofNullable(post.getImageUrl1())
+                    .ifPresent(imageUrl5 -> findPost.setImageUrl1(imageUrl5));
+            Optional.ofNullable(post.getImageUrl1())
+                    .ifPresent(imageUrl6 -> findPost.setImageUrl1(imageUrl6));
+
 
             return postRepository.save(findPost);
     }
@@ -55,6 +68,7 @@ public class PostService {
         return findPost;
     }
 
+    @Transactional(readOnly = true)
     public Page<Post> findPostsSort(int page, int size, Sort sort) {
         Pageable pageable = PageRequest.of(page, size, sort);
         return postRepository.findAll(pageable);

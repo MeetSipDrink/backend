@@ -37,8 +37,8 @@ public class PostController {
     @PostMapping
     public ResponseEntity postPost(@Valid @RequestBody PostDto.Post requestBody) throws IllegalArgumentException {
         Post post = mapper.postPostDtoToPost(requestBody);
-        Post creatPost = postService.createPost(post);
-        URI location = UriCreator.createUri(POST_DEFAULT_URL, creatPost.getPostId());
+        Post createPost = postService.createPost(post);
+        URI location = UriCreator.createUri(POST_DEFAULT_URL, createPost.getPostId());
         return ResponseEntity.created(location).build();
     }
 
@@ -46,6 +46,7 @@ public class PostController {
     public ResponseEntity patchPost(@PathVariable("post-id") @Positive long postId,
                                     @Valid @RequestBody PostDto.Patch requestBody) {
         Post post = postService.updatePost(postId, mapper.postPatchDtoToPost(requestBody));
+
         return new ResponseEntity<>(
                 new SingleResponseDto<>(mapper.postToPostResponseDto(post)), HttpStatus.OK);
     }
