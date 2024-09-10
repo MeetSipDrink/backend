@@ -11,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -41,25 +40,12 @@ public class PostService {
                 throw new BusinessLogicException(ExceptionCode.BOARD_UNAUTHORIZED_ACTION);
             }
 
-            Optional.ofNullable(post.getTitle())
-                    .ifPresent(title -> findPost.setTitle(title));
-            Optional.ofNullable(post.getContent())
-                    .ifPresent(content -> findPost.setContent(content));
-            Optional.ofNullable(post.getImageUrl1())
-                    .ifPresent(imageUrl1 -> findPost.setImageUrl1(imageUrl1));
-            Optional.ofNullable(post.getImageUrl2())
-                    .ifPresent(imageUrl2 -> findPost.setImageUrl1(imageUrl2));
-            Optional.ofNullable(post.getImageUrl1())
-                    .ifPresent(imageUrl3 -> findPost.setImageUrl1(imageUrl3));
-            Optional.ofNullable(post.getImageUrl1())
-                    .ifPresent(imageUrl4 -> findPost.setImageUrl1(imageUrl4));
-            Optional.ofNullable(post.getImageUrl1())
-                    .ifPresent(imageUrl5 -> findPost.setImageUrl1(imageUrl5));
-            Optional.ofNullable(post.getImageUrl1())
-                    .ifPresent(imageUrl6 -> findPost.setImageUrl1(imageUrl6));
+        Optional.ofNullable(post.getTitle())
+                .ifPresent(title -> findPost.setTitle(title));
+        Optional.ofNullable(post.getContent())
+                .ifPresent(content -> findPost.setContent(content));
 
-
-            return postRepository.save(findPost);
+        return postRepository.save(findPost);
     }
 
     public synchronized Post findPost(long postId) {

@@ -22,14 +22,9 @@ public enum ExceptionCode {
     BOARD_EXISTS(409,"Board exists"),
     INVALID_BOARD_TYPE(400,"INVALID_BOARD_TYPE"),
 
-    //notice 관련
-    NOTICE_UNAUTHORIZED_ACTION(403, "Notice_Unauthorized_Action"),
-    NOTICE_NOT_FOUND(404, "Notice Not Found"),
-    NOTICE_IMAGE_NOT_FOUND(404,"Notice_Image Not Found"),
-
-    //member 관련
-    MEMBER_NOT_FOUND(404,"Member Not Found"),
-    MEMBER_EXISTS(409,"Member exists"),
+    // member 관련
+    MEMBER_NOT_FOUND(404, "Member Not Found"),
+    MEMBER_EXISTS(409, "Member exists"),
     PHONE_EXISTS(409, "Phone exists"),
     NICKNAME_EXISTS(409, "NickName exists"),
 
@@ -47,16 +42,11 @@ public enum ExceptionCode {
 
     // 토큰 인증 관련
     UNAUTHORIZED_MEMBER(401, "권한이 없는 멤버입니다."),
-    TOKEN_INVALID(404, "토큰값이 유효하지 않습니다."),
-
-    //룰렛 관련
-    ROULETTE_EXISTS(409, "roulette exists"),
-    ROULETTE_NOT_FOUND(404, "Roulette Not Found");
+    TOKEN_INVALID(404, "토큰값이 유효하지 않습니다.");
 
     @Getter
     private int statusCode;
 
     @Getter
     private String statusDescription;
-
 }

@@ -37,6 +37,9 @@ public class Post extends Auditable {
     @Column(name = "post_comment_count", nullable = false)
     private int commentCount = 0;
 
+
+
+
     private String imageUrl1;
     private String imageUrl2;
     private String imageUrl3;
@@ -44,7 +47,7 @@ public class Post extends Auditable {
     private String imageUrl5;
     private String imageUrl6;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
@@ -65,6 +68,15 @@ public class Post extends Auditable {
         }
     }
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<PostImage> postImageList = new ArrayList<>();
+
+    public void setPostImages(PostImage postImage) {
+        postImageList.add(postImage);
+        if(postImage.getPost() != this) {
+            postImage.setPost(this);
+        }
+    }
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PostComment> postCommentList = new ArrayList<>();

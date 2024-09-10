@@ -76,39 +76,12 @@ public class MemberController {
     }
 
     @DeleteMapping("/{member-id}")
-    public ResponseEntity<Void> deleteMember(@PathVariable("member-id") @Positive long memberId) {
+    public ResponseEntity deleteMember(@PathVariable("member-id") @Positive long memberId) {
         service.deleteMember(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
-//
-//    @PostMapping("/friend/{friend-nickname}")
-//    public ResponseEntity addFriend(@PathVariable("friend-nickname") String friendNickname,
-//                                    @RequestParam("member-nickname") String memberNickname) {
-//        friendService.addFriend(memberNickname, friendNickname);
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-//
-//
-//    @PostMapping("/accept/{friend-id}")
-//    public ResponseEntity acceptFriendRequest(@PathVariable("friend-id") @Positive long friendId,
-//                                              @RequestParam("member-nickname") String memberNickname) {
-//        friendService.acceptFriendRequest(friendId, memberNickname);
-//
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-//
-//
-//    @DeleteMapping("/reject/{member-nickname}/{friend-nickname}")
-//    public ResponseEntity rejectFriendRequest(@PathVariable("member-nickname") String memberNickname,
-//                                              @PathVariable("friend-nickname") String friendNickname) {
-//        friendService.rejectFriendRequest(memberNickname, friendNickname);
-//
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//
-//
-//    }
 }
 
 

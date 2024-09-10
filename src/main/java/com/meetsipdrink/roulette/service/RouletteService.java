@@ -23,15 +23,12 @@ public class RouletteService {
     public Roulette createRoulette(Roulette roulette) {
         verifyExistsDrinkType(roulette.getDrinkType());
         Roulette savedRoulette = repository.save(roulette);
-
         return savedRoulette;
     }
 
     public Roulette updateRoulette(Roulette roulette, String drinkType) {
-
         Optional.ofNullable(drinkType)
                 .ifPresent(value -> {roulette.setDrinkType(value);});
-
         return repository.save(roulette);
     }
 
@@ -41,7 +38,6 @@ public class RouletteService {
 
     public void deleteRoulette(String drinkType) {
         Roulette roulette = findVerifyRoulette(drinkType);
-
         repository.delete(roulette);
     }
 

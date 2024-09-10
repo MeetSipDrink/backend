@@ -5,6 +5,8 @@ import com.meetsipdrink.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import javax.swing.text.Style;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -73,6 +75,8 @@ public class MemberDto {
         private String alcoholType2;
 
         private String alcoholType3;
+
+
     }
 
     @Getter
@@ -90,6 +94,8 @@ public class MemberDto {
         private String alcoholType2;
 
         private String alcoholType3;
+
+        private String profileImage;
     }
 
 }
