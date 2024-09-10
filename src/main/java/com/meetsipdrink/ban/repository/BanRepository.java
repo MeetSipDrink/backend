@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface BanRepository extends JpaRepository<Ban, Long> {
-    List<Ban> findByMemberId(Long memberId);
-    List<Ban> findByBlockingMember(Member blockingMember);
+    List<Ban> findByBlockedMember_MemberId(Long memberId);
+
 }
 

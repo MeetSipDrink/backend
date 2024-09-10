@@ -26,23 +26,36 @@ public class BanService {
     private final FriendRepository friendRepository;
     private final BanMapper banMapper;
 
-    public void addBan(long memberId, long banMemberId) {
-        Member blockingMember = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.BLOCKING_MEMBER_NOT_FOUND));
 
-        Member bannedMember = memberRepository.findById(banMemberId)
+
+
+
+    public BanDto.Response addBan(long blockerId, long blockedMemberId) {
+        Member blocker = memberRepository.findById(blockerId)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.BLOCKING_MEMBER_NOT_FOUND));
+        Member blockedMember = memberRepository.findById(blockedMemberId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.BANNED_MEMBER_NOT_FOUND));
-        Friend friend = friendRepository.findByRequesterAndRecipient(blockingMember, bannedMember);
-        if (friend == null) {
-            friend = friendRepository.findByRequesterAndRecipient(bannedMember, blockingMember);
+        Friend friend1 = friendRepository.findByRequesterAndRecipient(blocker, blockedMember);
+        Friend friend2 = friendRepository.findByRequesterAndRecipient(blockedMember, blocker);
+        if (friend1 != null) {
+            friendRepository.delete(friend1);
         }
-        if (friend != null) {
-            friendRepository.delete(friend);
+        if (friend2 != null) {
+            friendRepository.delete(friend2);
         }
         Ban ban = new Ban();
-        ban.setBlockingMember(blockingMember);
-        ban.setBannedMember(bannedMember);
-        Ban savedBan = banRepository.save(ban);
+        ban.setBlockerMember(blocker);
+        ban.setBlockedMember(blockedMember);
+        banRepository.save(ban);
+        BanDto.Response response = new BanDto.Response();
+        response.setBanId(ban.getBanId());
+        response.setMemberId(blocker.getMemberId());
+        response.setBanMemberId(blockedMember.getMemberId());
+        response.setMemberNickname(blocker.getNickname());
+        response.setBannedNickname(blockedMember.getNickname());
+
+        return response;
+
     }
 
 //    @Transactional
@@ -70,9 +83,9 @@ public class BanService {
 
     @Transactional(readOnly = true)
     public List<BanDto.Response> getBanList(long memberId) {
-        Member blockingMember = memberRepository.findById(memberId)
+        Member blocker = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-        List<Ban> banList = banRepository.findByBlockingMember(blockingMember);
+        List<Ban> banList = banRepository.findByBlockedMember_MemberId(blocker.getMemberId());
         return banMapper.banToBanResponseList(banList);
     }
 
@@ -80,15 +93,11 @@ public class BanService {
     public void cancelBan(long banId) {
         Ban ban = banRepository.findById(banId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.BAN_RECORD_NOT_FOUND));
-        Member blockingMember = ban.getBlockingMember();
-        Member bannedMember = ban.getBannedMember();
-        if (blockingMember == null || bannedMember == null) {
-            throw new BusinessLogicException(ExceptionCode.INVALID_MEMBER);
-        }
         banRepository.delete(ban);
     }
-
 }
+
+
 
 
 
