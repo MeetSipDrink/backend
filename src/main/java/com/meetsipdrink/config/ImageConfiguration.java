@@ -21,14 +21,14 @@ public class ImageConfiguration {
     @Value("${cloud.aws.credentials.secretkey}")
     private String secretKey;
 
-    //@Primary
+    @Primary
     @Bean
     public ImageService fileSystemStorageService() {
         return new FileSystemStorageService();
     }
 
     @Bean
-    @Primary
+//    @Primary
     public AwsCredentialsProvider customAwsCredentialsProvider() {
         return () -> new AwsCredentials() {
             @Override
@@ -43,7 +43,7 @@ public class ImageConfiguration {
         };
     }
 
-    @Primary
+//    @Primary
     @Bean
     public ImageService s3StorageService() {
         S3Client s3Client =
