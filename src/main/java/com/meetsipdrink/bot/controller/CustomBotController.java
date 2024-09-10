@@ -26,7 +26,7 @@ public class CustomBotController {
         this.service = service;
     }
 
-    @GetMapping("/drink-recommend")
+    @PostMapping("/drink-recommend")
     public String chat(@RequestBody String prompt){
         String drinkPrompt = service.drinkPrompt(prompt);
         ChatGPTRequest request = new ChatGPTRequest(model, drinkPrompt);
