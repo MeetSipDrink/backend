@@ -11,6 +11,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.FetchType.LAZY;
+
 @Getter
 @Setter
 @Entity
@@ -38,8 +40,6 @@ public class Post extends Auditable {
     private int commentCount = 0;
 
 
-
-
     private String imageUrl1;
     private String imageUrl2;
     private String imageUrl3;
@@ -53,7 +53,7 @@ public class Post extends Auditable {
 
     public void setMember(Member member) {
         this.member = member;
-        if(!member.getPosts().contains(this)) {
+        if (!member.getPosts().contains(this)) {
             member.setPosts(this);
         }
     }
@@ -63,20 +63,11 @@ public class Post extends Auditable {
 
     public void setPostLikes(PostLike postLike) {
         postLikes.add(postLike);
-        if(postLike.getPost() != this) {
+        if (postLike.getPost() != this) {
             postLike.setPost(this);
         }
     }
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<PostImage> postImageList = new ArrayList<>();
-
-    public void setPostImages(PostImage postImage) {
-        postImageList.add(postImage);
-        if(postImage.getPost() != this) {
-            postImage.setPost(this);
-        }
-    }
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PostComment> postCommentList = new ArrayList<>();

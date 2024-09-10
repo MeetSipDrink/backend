@@ -30,6 +30,7 @@ public class BanService {
 
 
 
+
     public BanDto.Response addBan(long blockerId, long blockedMemberId) {
         Member blocker = memberRepository.findById(blockerId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.BLOCKING_MEMBER_NOT_FOUND));
