@@ -27,21 +27,25 @@ public class NoticeService {
         this.memberService = memberService;
     }
 
-    public Notice createNotice(Notice notice) throws IllegalArgumentException {
-        Member member = memberService.findVerifiedMember(notice.getMember().getMemberId());
+    public Notice createNotice(Notice notice, long memberId) throws IllegalArgumentException {
+        Member member = memberService.findVerifiedMember(memberId);
         notice.setMember(member);
 
-        if (member.getMemberId() != 1) {
+        if (memberId != 1) {
             throw new BusinessLogicException(ExceptionCode.NOTICE_UNAUTHORIZED_ACTION); // 관리자 검증 실패
+        }
+
+        if (notice.getImageUrls() != null && notice.getImageUrls().isEmpty()) {
+            notice.setImageUrls(notice.getImageUrls());  // 리스트를 통째로 추가
         }
 
         return noticeRepository.save(notice);
     }
 
-    public Notice updateNotice(long noticeId, Notice notice) {
+    public Notice updateNotice(long noticeId, Notice notice, long memberId) {
         Notice findNotice = findVerifiedNotice(noticeId);
 
-        if (findNotice.getMember().getMemberId() != 1) {
+        if (memberId != 1) {
             throw new BusinessLogicException(ExceptionCode.NOTICE_UNAUTHORIZED_ACTION); // 관리자 검증 실패
         }
 
@@ -49,6 +53,10 @@ public class NoticeService {
                 .ifPresent(title -> findNotice.setTitle(title));
         Optional.ofNullable(notice.getContent())
                 .ifPresent(content -> findNotice.setContent(content));
+
+        if (notice.getImageUrls() != null && !notice.getImageUrls().isEmpty()) {
+            findNotice.setImageUrls(notice.getImageUrls());
+        }
 
         return noticeRepository.save(findNotice);
     }
@@ -65,10 +73,10 @@ public class NoticeService {
         return noticeRepository.findAll(pageable);
     }
 
-    public void deleteNotice(long noticeId) {
+    public void deleteNotice(long noticeId, long memberId) {
         Notice findNotice = findVerifiedNotice(noticeId);
 
-        if (findNotice.getMember().getMemberId() != 1) {
+        if (memberId != 1) {
             throw new BusinessLogicException(ExceptionCode.NOTICE_UNAUTHORIZED_ACTION); // 관리자 검증 실패
         }
 

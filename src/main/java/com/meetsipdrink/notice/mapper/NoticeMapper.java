@@ -7,7 +7,7 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {NoticeImageMapper.class})
+@Mapper(componentModel = "spring")
 public interface NoticeMapper {
 
     Notice noticePostDtoToNotice(NoticeDto.Post requestBody);
@@ -17,7 +17,6 @@ public interface NoticeMapper {
     @Mapping(source = "member.memberId", target = "memberId")
     @Mapping(source = "member.nickname", target = "nickname")
     @Mapping(source = "member.profileImage", target = "profileImage")
-    @Mapping(target = "noticeImageList", qualifiedByName = "noticeImageToNoticeImageResponse")
     NoticeDto.Response noticeToNoticeResponseDto(Notice notice);
 
     List<NoticeDto.Response> noticesToNoticeResponseDtos(List<Notice> notices);

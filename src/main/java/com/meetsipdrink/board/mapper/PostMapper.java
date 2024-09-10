@@ -7,7 +7,7 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {PostCommentMapper.class, PostImageMapper.class})
+@Mapper(componentModel = "spring", uses = {PostCommentMapper.class})
 public interface PostMapper {
 
     @Mapping(source = "memberId", target = "member.memberId")
@@ -20,7 +20,6 @@ public interface PostMapper {
     @Mapping(source = "member.nickname", target = "nickname")
     @Mapping(source = "member.profileImage", target = "profileImage")
     @Mapping(target = "postCommentList", qualifiedByName = "postCommentToPostCommentResponse")
-    @Mapping(target = "postImageList", qualifiedByName = "postImageToPostImageResponse")
     PostDto.Response postToPostResponseDto(Post post);
 
     List<PostDto.Response> postsToPostResponseDtos(List<Post> posts);

@@ -19,6 +19,8 @@ public class NoticeDto {
 
         @NotBlank
         private String content;
+
+        private List<String> imageUrls;
     }
 
     @Getter
@@ -29,6 +31,8 @@ public class NoticeDto {
 
         @NotBlank
         private String content;
+
+        private List<String> imageUrls;
     }
 
     @Getter
@@ -43,7 +47,7 @@ public class NoticeDto {
         private int views;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
-        private List<NoticeImageDto.Response> noticeImageList;
+        private List<String> noticeImageList;
         private String nickname;
         private String profileImage;
     }
