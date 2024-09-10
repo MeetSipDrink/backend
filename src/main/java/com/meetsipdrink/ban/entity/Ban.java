@@ -9,6 +9,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.*;
+
 @Entity (name = "ban")
 @Getter
 @Setter
@@ -18,18 +20,21 @@ public class Ban extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long banId;
 
-    @Column(name = "member_id", nullable = false)
-    private Long memberId;
 
-    @Column(name = "ban_member_id", nullable = false)
-    private Long banMemberId;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "blocker_id")
+    private Member blockerMember;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id", insertable = false, updatable = false)
-    private Member blockingMember;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "blocked_member_id")
+    private Member blockedMember;
 
-    @ManyToOne
-    @JoinColumn(name = "ban_member_id", insertable = false, updatable = false)
-    private Member bannedMember;
+    public void setBlockerMember(Member member) {
+        this.blockerMember = member;
+        if (!member.getBans().contains(this)) {
+            member.addBan(this);
+        }
+    }
+
+
 }
-

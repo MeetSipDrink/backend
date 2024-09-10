@@ -3,6 +3,7 @@ package com.meetsipdrink.ban.mapper;
 import com.meetsipdrink.ban.dto.BanDto;
 import com.meetsipdrink.ban.entity.Ban;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
