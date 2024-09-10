@@ -96,6 +96,11 @@ public class BanService {
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.BAN_RECORD_NOT_FOUND));
         banRepository.delete(ban);
     }
+
+
+
+
+
 }
 
 
