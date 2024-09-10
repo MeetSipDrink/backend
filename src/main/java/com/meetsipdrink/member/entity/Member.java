@@ -85,6 +85,14 @@ public class Member extends Auditable {
     @OneToMany(mappedBy = "member", cascade = CascadeType.MERGE)
     private List<PostComment> postComments = new ArrayList<>();
 
+
+
+
+
+    @OneToOne(mappedBy = "member")
+    @JsonManagedReference
+    private Notice notice;
+
     @OneToMany(mappedBy = "blockerMember", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ban> bans = new ArrayList<>();
 
@@ -124,22 +132,6 @@ public class Member extends Auditable {
         postComments.add(postComment);
         if (postComment.getMember() != this) {
             postComment.setMember(this);
-        }
-    }
-
-    public void addBan(Ban ban) {
-        if (!bans.contains(ban)) {
-            bans.add(ban);
-            ban.setBlockerMember(this);
-        }
-    }
-
-    public void removeBan(Ban ban) {
-        if (bans.contains(ban)) {
-            bans.remove(ban);
-            if (ban.getBlockerMember() == this) {
-                ban.setBlockerMember(null);
-            }
         }
     }
 

@@ -11,8 +11,6 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.persistence.FetchType.*;
-
 @Getter
 @Setter
 @Entity
@@ -38,6 +36,16 @@ public class Post extends Auditable {
 
     @Column(name = "post_comment_count", nullable = false)
     private int commentCount = 0;
+
+
+
+
+    private String imageUrl1;
+    private String imageUrl2;
+    private String imageUrl3;
+    private String imageUrl4;
+    private String imageUrl5;
+    private String imageUrl6;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "MEMBER_ID")

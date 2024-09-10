@@ -7,12 +7,10 @@ import com.meetsipdrink.exception.BusinessLogicException;
 import com.meetsipdrink.exception.ExceptionCode;
 import com.meetsipdrink.member.entity.Member;
 import com.meetsipdrink.member.service.MemberService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Transactional
@@ -24,7 +22,7 @@ public class PostCommentService {
 
     public PostCommentService(PostService postService,
                               MemberService memberService,
-                              PostCommentRepository postCommentRepository) {
+                              PostCommentRepository postCommentRepository, PostRepository postRepository) {
         this.postService = postService;
         this.memberService = memberService;
         this.postCommentRepository = postCommentRepository;
@@ -40,8 +38,8 @@ public class PostCommentService {
         return postCommentRepository.save(postComment);
     }
 
-    public PostComment updatePostComment(PostComment postComment, long memberId) {
-        PostComment findPostComment = findVerifiedPostComment(postComment.getPostCommentId());
+    public PostComment updatePostComment(long postCommentId, PostComment postComment, long memberId) {
+        PostComment findPostComment = findVerifiedPostComment(postCommentId);
 
         if (findPostComment.getMember().getMemberId() != memberId) {
             throw new BusinessLogicException(ExceptionCode.BOARD_UNAUTHORIZED_ACTION);
@@ -52,8 +50,9 @@ public class PostCommentService {
         return postCommentRepository.save(findPostComment);
     }
 
-    public Page<PostComment> findPostComments(int page, int size) {
-        return postCommentRepository.findAll(PageRequest.of(page, size, Sort.by("postCommentId").descending()));
+    @Transactional(readOnly = true)
+    public List<PostComment> findPostComments() {
+        return postCommentRepository.findAll();
     }
 
     public void deletePostComment(long postCommentId, long memberId) {

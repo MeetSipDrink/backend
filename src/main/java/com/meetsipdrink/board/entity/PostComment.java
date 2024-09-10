@@ -26,7 +26,7 @@ public class PostComment extends Auditable {
     @Column(name = "post_comment_content", nullable = false)
     private String content;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
@@ -37,7 +37,7 @@ public class PostComment extends Auditable {
         }
     }
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne
     @JoinColumn(name = "POST_ID")
     private Post post;
 
@@ -46,6 +46,13 @@ public class PostComment extends Auditable {
         if(!post.getPostCommentList().contains(this)) {
             post.setPostComments(this);
         }
+    }
+
+
+
+
+    public PostComment(Long postCommentId) {
+        this.postCommentId = postCommentId;
     }
 
     @ManyToOne(fetch = LAZY)
