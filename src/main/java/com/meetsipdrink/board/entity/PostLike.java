@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.*;
+
 @Getter
 @Setter
 @Entity
@@ -16,7 +18,7 @@ public class PostLike {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long postLikeId;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
@@ -27,7 +29,7 @@ public class PostLike {
         }
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "POST_ID")
     private Post post;
 

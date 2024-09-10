@@ -11,6 +11,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.FetchType.*;
+
 @Getter
 @Setter
 @Entity
@@ -24,7 +26,7 @@ public class PostComment extends Auditable {
     @Column(name = "post_comment_content", nullable = false)
     private String content;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
@@ -35,7 +37,7 @@ public class PostComment extends Auditable {
         }
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "POST_ID")
     private Post post;
 
@@ -46,7 +48,7 @@ public class PostComment extends Auditable {
         }
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "parent_comment_id")
     private PostComment parentComment;
 

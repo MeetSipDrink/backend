@@ -1,5 +1,6 @@
 package com.meetsipdrink.friend.service;
 
+import com.fasterxml.jackson.datatype.jsr310.deser.InstantDeserializer;
 import com.meetsipdrink.exception.BusinessLogicException;
 import com.meetsipdrink.exception.ExceptionCode;
 import com.meetsipdrink.friend.entitiy.Friend;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -85,20 +87,44 @@ public class FriendService {
         friendRepository.delete(friendRequest);
     }
 
-    public void removeFriend(long requesterId, long recipientId) {
-        Member requester = memberRepository.findById(requesterId)
-                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-        Member recipient = memberRepository.findById(recipientId)
-                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-        Friend friendRequest = friendRepository.findByRequesterAndRecipient(requester, recipient);
-        if (friendRequest != null) {
-            friendRepository.delete(friendRequest);
+//    public void removeFriend(long requesterId, long recipientId) {
+//        Member requester = memberRepository.findById(requesterId)
+//                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+//        Member recipient = memberRepository.findById(recipientId)
+//                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+//        Friend friendRequest = friendRepository.findByRequesterAndRecipient(requester, recipient);
+//        if (friendRequest != null) {
+//            friendRepository.delete(friendRequest);
+//        }
+//        Friend reverseFriendRequest = friendRepository.findByRequesterAndRecipient(recipient, requester);
+//        if (reverseFriendRequest != null) {
+//            friendRepository.delete(reverseFriendRequest);
+//        }
+//    }
+
+    public void removeFriend(long memberId, long friendId) {
+        // 1. 친구 관계 조회
+        List<Friend> friendRelations = friendRepository.findByRequester_MemberIdOrRecipient_MemberIdAndFriendStatus(memberId, friendId, Friend.Status.ACCEPTED);
+
+        // 2. 양방향으로 존재하는 친구 관계 삭제
+        for (Friend friend : friendRelations) {
+            if (friend.getRequester().getMemberId() == friendId || friend.getRecipient().getMemberId() == friendId) {
+                friendRepository.delete(friend);
+            }
         }
-        Friend reverseFriendRequest = friendRepository.findByRequesterAndRecipient(recipient, requester);
-        if (reverseFriendRequest != null) {
-            friendRepository.delete(reverseFriendRequest);
+
+        Member requester = new Member();
+        requester.setMemberId(friendId);
+        Member recipient = new Member();
+        recipient.setMemberId(memberId);
+
+        Friend reverseFriend = friendRepository.findByRequesterAndRecipient(requester, recipient);
+        if (reverseFriend != null) {
+            friendRepository.delete(reverseFriend);
         }
     }
+
+
 
     @Transactional(readOnly = true)
     public List<Member> getFriends(long memberId, Friend.Status status) {
@@ -113,7 +139,8 @@ public class FriendService {
         return friendMembers;
     }
 
-//특정 회원이랑 비교 근데 없어도 될 듯
+
+    //특정 회원이랑 비교 근데 없어도 될 듯
     @Transactional(readOnly = true)
     public Friend getFriend(long memberId, long friendId) {
         Member member = memberRepository.findById(memberId)
@@ -127,4 +154,14 @@ public class FriendService {
         }
         return friendRequest;
     }
-}
+
+
+    public boolean isFriend(long memberId, long friendId) {
+        List<Friend.Status> statuses = Arrays.asList(Friend.Status.ACCEPTED, Friend.Status.PENDING); // 친구 상태 정의
+        return friendRepository.findByRequester_MemberIdAndRecipient_MemberIdAndFriendStatusIn(memberId, friendId, statuses).isPresent() ||
+                friendRepository.findByRequester_MemberIdAndRecipient_MemberIdAndFriendStatusIn(friendId, memberId, statuses).isPresent();
+    }
+
+    }
+
+

@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.*;
+
 @Getter
 @Setter
 @Entity
@@ -20,7 +22,7 @@ public class PostImage {
     @Column(name = "post_image_URL", nullable = false)
     private String imageUrl;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "POST_ID")
     private Post post;
 

@@ -23,7 +23,6 @@ public class RouletteService {
     public Roulette createRoulette(Roulette roulette) {
         verifyExistsDrinkType(roulette.getDrinkType());
         Roulette savedRoulette = repository.save(roulette);
-
         return savedRoulette;
     }
 

@@ -85,7 +85,7 @@ public class Member extends Auditable {
     @OneToMany(mappedBy = "member", cascade = CascadeType.MERGE)
     private List<PostComment> postComments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "blockingMember", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "blockerMember", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ban> bans = new ArrayList<>();
 
     public void addSentFriendRequest(Friend friend) {
@@ -128,20 +128,20 @@ public class Member extends Auditable {
     }
 
     public void addBan(Ban ban) {
-        bans.add(ban);
-        if (ban.getBlockingMember() != this) {
-            ban.setBlockingMember(this);
+        if (!bans.contains(ban)) {
+            bans.add(ban);
+            ban.setBlockerMember(this);
         }
     }
 
     public void removeBan(Ban ban) {
-        bans.remove(ban);
-        if (ban.getBlockingMember() == this) {
-            ban.setBlockingMember(null);
+        if (bans.contains(ban)) {
+            bans.remove(ban);
+            if (ban.getBlockerMember() == this) {
+                ban.setBlockerMember(null);
+            }
         }
     }
-
-
 
     public enum memberGender {
         M("남성"),

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 
 import static javax.persistence.CascadeType.*;
 import static javax.persistence.EnumType.*;
+import static javax.persistence.FetchType.*;
 
 @Entity
 @Table(name = "friend", uniqueConstraints = {
@@ -25,16 +26,16 @@ public class Friend extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long friendId;
 
-    @ManyToOne(cascade = ALL)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "requester_id")
     private Member requester;
 
-    @ManyToOne(cascade = ALL)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "recipient_id")
     private Member recipient;
 
 
-    @Enumerated(STRING)
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status friendStatus = Status.PENDING;
 
@@ -51,13 +52,13 @@ public class Friend extends Auditable {
             recipient.addReceivedFriendRequest(this);
         }
     }
-
+    @Getter
     public enum Status {
         PENDING("대기중"),
         ACCEPTED("요청 수락"),
         REJECTED("요청 거절"),
         DISCONNECTED("친구 끊김");
-        @Getter
+
         private final String status;
         Status(String status) {
             this.status = status;
