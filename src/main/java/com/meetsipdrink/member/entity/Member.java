@@ -1,11 +1,13 @@
 package com.meetsipdrink.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.meetsipdrink.audit.Auditable;
 import com.meetsipdrink.ban.entity.Ban;
 import com.meetsipdrink.board.entity.Post;
 import com.meetsipdrink.board.entity.PostComment;
 import com.meetsipdrink.board.entity.PostLike;
 import com.meetsipdrink.friend.entitiy.Friend;
+import com.meetsipdrink.notice.entity.Notice;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -85,13 +87,16 @@ public class Member extends Auditable {
     @OneToMany(mappedBy = "member", cascade = CascadeType.MERGE)
     private List<PostComment> postComments = new ArrayList<>();
 
-
-
-
-
     @OneToOne(mappedBy = "member")
     @JsonManagedReference
     private Notice notice;
+
+    public void setNotice(Notice notice) {
+        this.notice = notice;
+        if (notice.getMember() != this) {
+            notice.setMember(this);
+        }
+    }
 
     @OneToMany(mappedBy = "blockerMember", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ban> bans = new ArrayList<>();
@@ -132,6 +137,13 @@ public class Member extends Auditable {
         postComments.add(postComment);
         if (postComment.getMember() != this) {
             postComment.setMember(this);
+        }
+    }
+
+    public void addBan(Ban ban) {
+        if (!bans.contains(ban)) {
+            bans.add(ban);
+            ban.setBlockerMember(this);
         }
     }
 
