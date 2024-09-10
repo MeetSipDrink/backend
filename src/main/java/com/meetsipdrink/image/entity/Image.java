@@ -16,8 +16,6 @@ public class Image {
 
     private Long postId;
 
-    private String category;
-
     private String boardtype;
 
     private String uploadFileName;

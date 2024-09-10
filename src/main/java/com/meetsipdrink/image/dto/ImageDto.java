@@ -9,6 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ImageDto {
     private Long id;
-    private String category;
     private String boardtype;
 }
