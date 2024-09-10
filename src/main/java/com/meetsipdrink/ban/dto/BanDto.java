@@ -13,18 +13,18 @@ public class BanDto {
     @Getter
     @Setter
     @NoArgsConstructor
-    public static class Post{
-        private long memberId;
-        private long banMemberId;
+    public static class Post {
+        private long blockerId;
+        private long blockedMemberId;
     }
 
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    public static class Request {
-        private long memberId;
-        private long banMemberId;
-    }
+//    @Getter
+//    @Setter
+//    @NoArgsConstructor
+//    public static class Request {
+//        private long blockerId;
+//        private long blockedMemberId;
+//    }
 
     @Getter
     @Setter
@@ -37,4 +37,18 @@ public class BanDto {
         private String bannedNickname;
 
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class banListResponse {
+        private long banId;
+        private long memberId;
+        private long banMemberId;
+        private String memberNickname;
+        private String bannedNickname;
+    }
+
+
 }
+
