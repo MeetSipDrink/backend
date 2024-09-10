@@ -83,7 +83,17 @@ public class MemberDto {
     @Setter
     @NoArgsConstructor
     public static class Response{
+        private String email;
+
+        private String password;
+
+        private String profileImage;
+
         private String  nickname;
+
+        private String name;
+
+        private Member.memberStatus status = Member.memberStatus.isActive;
 
         private Member.memberGender gender;
 
@@ -95,7 +105,12 @@ public class MemberDto {
 
         private String alcoholType3;
 
-        private String profileImage;
+        private Boolean chatRoomStatus = false;
+
+        private Integer banCount = 0;
+
+
+
     }
 
 }

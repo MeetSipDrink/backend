@@ -51,8 +51,9 @@ public class BanController {
         List<BanDto.Response> banDtoList = banService.getBanList(memberId);
 
         List<BanDto.banListResponse> banList = banDtoList.stream()
+                .filter(banDto -> banDto != null)
                 .map(banDto -> {
-                    BanDto.banListResponse response = new  BanDto.banListResponse();
+                    BanDto.banListResponse response = new BanDto.banListResponse();
                     response.setBanId(banDto.getBanId());
                     response.setMemberId(banDto.getMemberId());
                     response.setBanMemberId(banDto.getBanMemberId());

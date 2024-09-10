@@ -8,6 +8,5 @@ import java.util.List;
 
 public interface BanRepository extends JpaRepository<Ban, Long> {
     List<Ban> findByBlockedMember_MemberId(Long memberId);
-
 }
 
