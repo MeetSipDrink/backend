@@ -68,7 +68,6 @@ public class MemberDto {
 
         private String profileImage;
 
-        @NotBlank(message =  "선호하는 주종 1가지는 넣어주세요")
         private String alcoholType1;
 
         private String alcoholType2;
