@@ -1,6 +1,8 @@
 package com.meetsipdrink.member.controller;
 
 
+import com.meetsipdrink.ban.dto.BanDto;
+import com.meetsipdrink.ban.service.BanService;
 import com.meetsipdrink.dto.MultiResponseDto;
 import com.meetsipdrink.dto.SingleResponseDto;
 import com.meetsipdrink.friend.service.FriendService;
@@ -10,6 +12,7 @@ import com.meetsipdrink.member.mapper.MemberMapper;
 import com.meetsipdrink.member.service.MemberService;
 import com.meetsipdrink.utils.UriCreator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +25,7 @@ import javax.validation.constraints.Positive;
 import javax.websocket.server.PathParam;
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @Validated
@@ -33,6 +37,7 @@ public class MemberController {
     private final MemberMapper memberMapper;
     private final MemberService memberService;
     private final FriendService friendService;
+    private final BanService banService;
 
     @PostMapping
     public ResponseEntity postMember(@Valid @RequestBody MemberDto.Post requestBody) {
@@ -63,17 +68,26 @@ public class MemberController {
                 , HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity getMembers(@Positive @RequestParam int page,
-                                     @Positive @RequestParam int size) {
-        Page<Member> pageMembers = service.findMembers(page - 1, size);
-        List<Member> members = pageMembers.getContent();
-        return new ResponseEntity<>(
-                new MultiResponseDto<>(memberMapper.membersToResponseDto(members),
-                        pageMembers),
-                HttpStatus.OK);
+//    @GetMapping("/{memberId}")
+//    public ResponseEntity<List<BanDto.banListResponse>> getBanList(@PathVariable long memberId) {
+//        List<BanDto.Response> banDtoList = banService.getBanList(memberId);
+//
+//        List<BanDto.banListResponse> banList = banDtoList.stream()
+//                .filter(banDto -> banDto != null)
+//                .map(banDto -> {
+//                    BanDto.banListResponse response = new BanDto.banListResponse();
+//                    response.setBanId(banDto.getBanId());
+//                    response.setMemberId(banDto.getMemberId());
+//                    response.setBanMemberId(banDto.getBanMemberId());
+//                    response.setMemberNickname(banDto.getMemberNickname());
+//                    response.setBannedNickname(banDto.getBannedNickname());
+//                    return response;
+//                })
+//                .collect(Collectors.toList());
+//
+//        return new ResponseEntity<>(banList, HttpStatus.OK);
+//    }
 
-    }
 
     @DeleteMapping("/{member-id}")
     public ResponseEntity deleteMember(@PathVariable("member-id") @Positive long memberId) {
