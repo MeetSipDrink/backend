@@ -23,18 +23,17 @@ public class MemberDto {
         private String email;
 
         @NotNull(message = "비밀번호는 필수 항목입니다.")
-//        @Size(min = 8, max = 20, message = "비밀번호는 8자에서 20자 사이여야 합니다.")
-//        @Pattern(regexp = "^[a-zA-Z0-9!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?`~]{8,15}$",
-//                message = "비밀번호는 8자이상 15자 이하의 알파벳, 숫자, 특수문자만 포함할 수 있습니다.")
+        @Size(min = 8, max = 20, message = "비밀번호는 8자에서 20자 사이여야 합니다.")
+        @Pattern(regexp = "^[a-zA-Z0-9!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?`~]{8,15}$",
+                message = "비밀번호는 8자이상 15자 이하의 알파벳, 숫자, 특수문자만 포함할 수 있습니다.")
         private String password;
 
         private String profileImage;
 
-//        @Pattern(regexp = "^[a-zA-Z0-9가-힣]{2,8}$",
-//                message = "특수문자 제외 2자이상 8자 이하로 입력해주세요.")
+        @Pattern(regexp = "^[a-zA-Z0-9가-힣]{2,8}$",
+                message = "특수문자 제외 2자이상 8자 이하로 입력해주세요.")
         private String  nickname;
 
-//        @Pattern(regexp = "M|F", message = "성별을 'M' 과 'F'로 입렵해 주세요.")
         private Member.memberGender gender;
 
         @NotBlank(message = "이름은 공백이 아니어야 합니다.")

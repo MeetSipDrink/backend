@@ -13,10 +13,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,27 +29,19 @@ public class Member extends Auditable {
     @Column(name = "member_email", nullable = false, unique = true, updatable = false)
     private String email;
 
-    @NotNull(message = "비밀번호는 필수 항목입니다.")
-    @Size(min = 8, max = 20, message = "비밀번호는 8자에서 20자 사이여야 합니다.")
-    @Pattern(regexp = "^[a-zA-Z0-9!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?`~]{8,15}$",
-            message = "비밀번호는 8자이상 15자 이하의 알파벳, 숫자, 특수문자만 포함할 수 있습니다.")
     @Column(name = "member_password", nullable = false)
     private String password;
 
     @Column(name = "member_profile_image")
     private String profileImage;
 
-    @Pattern(regexp = "^[a-zA-Z0-9가-힣]{2,8}$",
-            message = "특수문자 제외 2자이상 8자 이하로 입력해주세요.")
     @Column(name = "nickname", nullable = false)
     private String nickname;
 
     @Enumerated(value = EnumType.STRING)
-    @Pattern(regexp = "M|F", message = "성별을 'M' 과 'F'로 입렵해 주세요.")
     @Column(name = "member_gender", nullable = false)
     private memberGender gender;
 
-    @NotBlank(message = "이름은 공백이 아니어야 합니다.")
     @Column(name = "member_name", nullable = false)
     private String name;
 
