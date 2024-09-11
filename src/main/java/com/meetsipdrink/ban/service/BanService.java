@@ -83,20 +83,33 @@ public class BanService {
 //    }
 
     @Transactional(readOnly = true)
-    public List<BanDto.Response> getBanList(long memberId) {
-        Member blocker = memberRepository.findById(memberId)
+    public List<BanDto.Response> getBanList(long blockerMember) {
+        Member blocker = memberRepository.findById(blockerMember)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-        List<Ban> banList = banRepository.findByBlockedMember_MemberId(blocker.getMemberId());
+        List<Ban> banList = banRepository.findByBlockerMember_MemberId(blocker.getMemberId());
+        // 매핑 전에 banList 값 확인
+        for (Ban ban : banList) {
+            System.out.println("Ban ID: " + ban.getBanId());
+            System.out.println("Blocker Member ID: " + ban.getBlockerMember().getMemberId());
+            System.out.println("Blocker Nickname: " + ban.getBlockerMember().getNickname());
+            System.out.println("Banned Member ID: " + ban.getBlockedMember().getMemberId());
+            System.out.println("Banned Nickname: " + ban.getBlockedMember().getNickname());
+        }
         return banMapper.banToBanResponseList(banList);
+
     }
+
+
+
+
 
     @Transactional
-    public void cancelBan(long banId) {
-        Ban ban = banRepository.findById(banId)
+    public void cancelBan(Member blockerMember, Member blockedMember) {
+        Ban ban = banRepository.findByBlockerMemberAndBlockedMember(blockerMember, blockedMember)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.BAN_RECORD_NOT_FOUND));
+
         banRepository.delete(ban);
     }
-
 
 
 
