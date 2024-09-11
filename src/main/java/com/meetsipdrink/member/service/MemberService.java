@@ -39,12 +39,16 @@ public class MemberService {
 
     }
 
+
+
     public Member updateMember(Member member) {
         Member findMember = isvalidMember(member.getMemberId());
-        if (!findMember.getNickname().equals(member.getNickname())) {
-            verifyNickName(member.getNickname());
-            Optional.ofNullable(member.getNickname())
-                    .ifPresent(nickname -> findMember.setNickname(nickname));
+
+        if (member.getNickname() != null) {
+            if (!findMember.getNickname().equals(member.getNickname())) {
+                verifyNickName(member.getNickname());
+                findMember.setNickname(member.getNickname());
+            }
         }
         Optional.ofNullable(member.getProfileImage())
                 .ifPresent(profileImage -> findMember.setProfileImage(profileImage));
@@ -53,11 +57,13 @@ public class MemberService {
         Optional.ofNullable(member.getAlcoholType1())
                 .ifPresent(alcoholType1 -> findMember.setAlcoholType1(alcoholType1));
         Optional.ofNullable(member.getAlcoholType2())
-                .ifPresent(alcoholType2 -> findMember.setAlcoholType1(alcoholType2));
+                .ifPresent(alcoholType2 -> findMember.setAlcoholType2(alcoholType2));
         Optional.ofNullable(member.getAlcoholType3())
-                .ifPresent(alcoholType3 -> findMember.setAlcoholType1(alcoholType3));
+                .ifPresent(alcoholType3 -> findMember.setAlcoholType3(alcoholType3));
+
         return memberRepository.save(findMember);
     }
+
 
 
     public Member findMember(long memberId) {
