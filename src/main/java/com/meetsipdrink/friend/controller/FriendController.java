@@ -45,15 +45,17 @@ public class FriendController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/{member-id}")
+    @GetMapping("/{member-id}/{status}")
     public ResponseEntity getFriends(@PathVariable("member-id") long memberId,
-                                     @RequestParam("status") Friend.Status status) {
-        List<Member> friends = friendService.getFriends(memberId, status);
-        List<MemberDto.Response> responseList = mapper.membersToResponseDto(friends);
+                                     @PathVariable("status") String status) {
+        Friend.Status enumFriendStatus = friendService.convertToFriendStatus(status);
+        List<Member> friends = friendService.getFriends(memberId, enumFriendStatus);
+        List<FriendDto.ResponseDto> responseList = friendMapper.friendsToResponse(friends);
         return new ResponseEntity<>(new SingleResponseDto<>(responseList), HttpStatus.OK);
     }
 
-    @GetMapping("/{member-id}/{friend-id}")
+
+    @GetMapping("/{member-id}/friend/{friend-id}")
     public ResponseEntity getFriend(@PathVariable("member-id") long memberId,
                                     @PathVariable("friend-id") long friendId) {
         Friend friend = friendService.getFriend(memberId, friendId);

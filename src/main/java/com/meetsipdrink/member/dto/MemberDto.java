@@ -28,12 +28,14 @@ public class MemberDto {
                 message = "비밀번호는 8자이상 15자 이하의 알파벳, 숫자, 특수문자만 포함할 수 있습니다.")
         private String password;
 
+        @NotBlank
         private String profileImage;
 
         @Pattern(regexp = "^[a-zA-Z0-9가-힣]{2,8}$",
                 message = "특수문자 제외 2자이상 8자 이하로 입력해주세요.")
         private String  nickname;
 
+        @NotBlank
         private Member.memberGender gender;
 
         @NotBlank(message = "이름은 공백이 아니어야 합니다.")
@@ -42,11 +44,13 @@ public class MemberDto {
         @NotNull(message = "나이는 필수 항목입니다.")
         private Integer age;
 
-        @NotBlank(message =  "선호하는 주종 1가지는 넣어주세요")
+        @NotNull(message =  "선호하는 주종 1가지는 넣어주세요")
         private String alcoholType1;
 
+        @NotBlank
         private String alcoholType2;
 
+        @NotBlank
         private String alcoholType3;
     }
 
@@ -66,12 +70,16 @@ public class MemberDto {
                 message = "특수문자 제외 2자이상 8자 이하로 입력해주세요.")
         private String  nickname;
 
+        @NotBlank
         private String profileImage;
 
+        @NotBlank(message = "술 타입인 들어갈 수 있습니다")
         private String alcoholType1;
 
+        @NotBlank
         private String alcoholType2;
 
+        @NotBlank
         private String alcoholType3;
 
 

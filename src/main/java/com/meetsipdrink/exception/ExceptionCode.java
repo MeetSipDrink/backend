@@ -38,6 +38,7 @@ public enum ExceptionCode {
     FRIEND_REQUEST_ALREADY_EXISTS(409, "Friend Request Already Exists"),
     NOT_FRIEND_RECIPIENT(403, "Not a friend recipient"),
     FRIEND_REQUEST_NOT_FOUND(403, "친구요청을 찾을 수 없습니다"),
+    INVALID_FRIEND_STATUS (404, "없는 친구 상태입니다"),
     // 친구 요청 관련
     UNAUTHORIZED_ACCESS(404, "친구요청을 없습니다."),
 
