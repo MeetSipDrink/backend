@@ -19,7 +19,7 @@ public interface FriendMapper {
             FriendDto.ResponseDto response = new FriendDto.ResponseDto();
             response.setFriendNickName(member.getNickname());
             response.setFriendGender(member.getGender().getGender());
-            response.setGetFriendProfileImage(member.getProfileImage());
+            response.setFriendProfileImage(member.getProfileImage());
             response.setFriendAlcoholType1(member.getAlcoholType1());
             response.setFriendAlcoholType2(member.getAlcoholType2());
             response.setFriendAlcoholType3(member.getAlcoholType3());

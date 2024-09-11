@@ -136,6 +136,7 @@ public class FriendService {
         for (Friend friend : friends) {
             friendMembers.add(friend.getRecipient());
         }
+        System.out.println("memberId: " + memberId + ", status: " + status);
         return friendMembers;
     }
 
@@ -157,10 +158,19 @@ public class FriendService {
 
 
     public boolean isFriend(long memberId, long friendId) {
-        List<Friend.Status> statuses = Arrays.asList(Friend.Status.ACCEPTED, Friend.Status.PENDING); // 친구 상태 정의
+        List<Friend.Status> statuses = Arrays.asList(Friend.Status.ACCEPTED, Friend.Status.PENDING);
         return friendRepository.findByRequester_MemberIdAndRecipient_MemberIdAndFriendStatusIn(memberId, friendId, statuses).isPresent() ||
                 friendRepository.findByRequester_MemberIdAndRecipient_MemberIdAndFriendStatusIn(friendId, memberId, statuses).isPresent();
     }
+
+    public Friend.Status convertToFriendStatus(String status){
+        try {
+            return Friend.Status.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException e){
+            throw new BusinessLogicException(ExceptionCode.INVALID_FRIEND_STATUS);
+        }
+    }
+
 
     }
 

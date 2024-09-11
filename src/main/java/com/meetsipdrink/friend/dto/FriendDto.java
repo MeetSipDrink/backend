@@ -14,7 +14,7 @@ public class FriendDto {
     public static class ResponseDto {
         private String friendNickName;
         private String friendGender;
-        private String getFriendProfileImage;
+        private String FriendProfileImage;
         private String friendAlcoholType1;
         private String friendAlcoholType2;
         private String FriendAlcoholType3;
