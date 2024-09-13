@@ -49,6 +49,10 @@ public class MemberDto {
         private String alcoholType2;
 
         private String alcoholType3;
+
+        @NotNull
+        private String fcmToken;
+
     }
 
     @Getter
@@ -76,7 +80,6 @@ public class MemberDto {
         private String alcoholType2;
 
         private String alcoholType3;
-
 
     }
 
@@ -110,7 +113,7 @@ public class MemberDto {
 
         private Integer banCount = 0;
 
-
+        private String fcmToken;
 
     }
 
