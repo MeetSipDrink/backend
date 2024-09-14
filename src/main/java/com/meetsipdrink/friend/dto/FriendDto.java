@@ -12,6 +12,7 @@ public class FriendDto {
     @Setter
     @NoArgsConstructor
     public static class ResponseDto {
+        private long friendId;
         private String friendNickName;
         private String friendGender;
         private String FriendProfileImage;
