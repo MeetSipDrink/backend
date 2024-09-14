@@ -72,6 +72,9 @@ public class Member extends Auditable {
     @Column(name = "role")
     private List<String> roles = new ArrayList<>();
 
+    @Column(name = "member_fcm_token")
+    private String fcmToken;
+
     @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Friend> sentFriendRequests = new ArrayList<>(); // 요청한 친구 목록
 

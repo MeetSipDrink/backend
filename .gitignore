@@ -156,6 +156,8 @@ src/main/resources/application.yml
 src/main/resources/application-dev.yml
 src/main/resources/application-local.yml
 
+src/main/resources/meetsipdrink-firebase-adminsdk-gzvdp-99b3cc99f4.json
+
 # .iml (Redundant, covered in IntelliJ sections)
 server/src/*/*.iml
 

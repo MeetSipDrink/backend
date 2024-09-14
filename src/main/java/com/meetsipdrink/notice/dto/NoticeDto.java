@@ -47,7 +47,7 @@ public class NoticeDto {
         private int views;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
-        private List<String> noticeImageList;
+        private List<String> imageUrls;
         private String nickname;
         private String profileImage;
     }
