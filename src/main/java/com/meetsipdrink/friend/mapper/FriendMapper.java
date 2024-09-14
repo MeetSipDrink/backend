@@ -17,6 +17,7 @@ public interface FriendMapper {
         List<FriendDto.ResponseDto> result = new ArrayList<>();
         for (Member member : friends) {
             FriendDto.ResponseDto response = new FriendDto.ResponseDto();
+            response.setFriendId(member.getMemberId());
             response.setFriendNickName(member.getNickname());
             response.setFriendGender(member.getGender().getGender());
             response.setFriendProfileImage(member.getProfileImage());
