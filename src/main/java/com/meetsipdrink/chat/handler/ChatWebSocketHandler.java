@@ -26,6 +26,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(WebSocketSession session,
                                      TextMessage message) throws IOException {
+        String payload = message.getPayload();
         System.out.println(message.getPayload());
 
         for (WebSocketSession connectedSession : sessions) {
@@ -36,7 +37,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session,
-                                      CloseStatus status) {
+                                      CloseStatus status)  {
         sessions.remove(session);
 
         System.out.println("특정 클라이언트와의 연결이 해제되었습니다.");
