@@ -29,12 +29,25 @@ public class FriendDto {
         private long recipientId;
     }
 
+//    @Getter
+//    @Setter
+//    public static class AcceptFriendDto {
+//        private long friendId;
+//        private long recipientId;
+//    }
+
+
     @Getter
     @Setter
-    public static class AcceptFriendDto {
-        private long friendId;
-        private long recipientId;
+    @NoArgsConstructor
+public static class AcceptFriendDto {
+    private long requesterId;
+    private long recipientId;
+
     }
+
+
+
 
     @Getter
     @AllArgsConstructor

@@ -1,6 +1,6 @@
 package com.meetsipdrink.chatRoom.entity;
 import com.meetsipdrink.audit.Auditable;
-import lombok.AllArgsConstructor;
+import com.meetsipdrink.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,13 +13,17 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ChatRoom {
+public class ChatRoom  extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ChatRoomId;
 
-    @Column(name = "chat_room_name")
+    @Column(name = "chat_room_name", nullable = false)
     private String ChatRoomName;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "member_id")
+//    private Long memberId;
 
     @ElementCollection
     private Set<String> participants = new HashSet<>();
@@ -34,6 +38,14 @@ public class ChatRoom {
     public void removeParticipant(String username) {
         participants.remove(username);
     }
+
+
+//    public ChatRoom(String name, Member member) {
+//        this.name = name;
+//        this.member = member;
+//    }
+//
+
 }
 
 

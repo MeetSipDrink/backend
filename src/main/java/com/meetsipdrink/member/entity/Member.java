@@ -6,6 +6,7 @@ import com.meetsipdrink.ban.entity.Ban;
 import com.meetsipdrink.board.entity.Post;
 import com.meetsipdrink.board.entity.PostComment;
 import com.meetsipdrink.board.entity.PostLike;
+import com.meetsipdrink.chatRoom.entity.ChatRoom;
 import com.meetsipdrink.friend.entitiy.Friend;
 import com.meetsipdrink.notice.entity.Notice;
 import lombok.Getter;
@@ -14,7 +15,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity(name = "member")
 @Getter
@@ -76,10 +79,10 @@ public class Member extends Auditable {
     private String fcmToken;
 
     @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Friend> sentFriendRequests = new ArrayList<>(); // 요청한 친구 목록
+    private List<Friend> sentFriendRequests = new ArrayList<>();
 
     @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Friend> receivedFriendRequests = new ArrayList<>(); // 받은 친구 요청 목록
+    private List<Friend> receivedFriendRequests = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.MERGE)
     private List<Post> posts = new ArrayList<>();
@@ -94,15 +97,30 @@ public class Member extends Auditable {
     @JsonManagedReference
     private Notice notice;
 
+    @OneToMany(mappedBy = "blockerMember", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ban> bans = new ArrayList<>();
+
+//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private Set<ChatRoom> chatRooms = new HashSet<>();
+//
+////    public void addChatRoom(ChatRoom chatRoom) {
+//        chatRooms.add(chatRoom);
+//        chatRoom.setMember(this);
+//    }
+//
+//    public void removeChatRoom(ChatRoom chatRoom) {
+//        chatRooms.remove(chatRoom);
+//        chatRoom.setMember(null);
+//    }
+//
+
+
     public void setNotice(Notice notice) {
         this.notice = notice;
         if (notice.getMember() != this) {
             notice.setMember(this);
         }
     }
-
-    @OneToMany(mappedBy = "blockerMember", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Ban> bans = new ArrayList<>();
 
     public void addSentFriendRequest(Friend friend) {
         if (!sentFriendRequests.contains(friend)) {
