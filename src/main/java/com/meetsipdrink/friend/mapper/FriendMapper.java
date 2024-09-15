@@ -13,6 +13,7 @@ public interface FriendMapper {
 
     FriendDto.ResponseDto friendToResponse(Friend friend);
 
+
     default List<FriendDto.ResponseDto> friendsToResponse(List<Member> friends) {
         List<FriendDto.ResponseDto> result = new ArrayList<>();
         for (Member member : friends) {
@@ -29,4 +30,6 @@ public interface FriendMapper {
         }
         return result;
     }
+
+
 }

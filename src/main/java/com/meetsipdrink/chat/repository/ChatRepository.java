@@ -1,4 +1,8 @@
 package com.meetsipdrink.chat.repository;
 
-public class ChatRepository {
+import com.meetsipdrink.chatRoom.entity.ChatRoom;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ChatRepository extends JpaRepository <ChatRoom ,Long> {
+
 }

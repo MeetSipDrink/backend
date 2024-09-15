@@ -40,11 +40,10 @@ public class FriendController {
     }
 
     @PostMapping("/accept")
-    public ResponseEntity acceptFriendRequest(@RequestBody FriendDto.AcceptFriendDto requestDto) {
-        friendService.acceptFriendRequest(requestDto.getFriendId(), requestDto.getRecipientId());
+    public ResponseEntity<Void> acceptFriendRequest(@RequestBody FriendDto.AcceptFriendDto requestDto) {
+        friendService.acceptFriendRequest(requestDto.getRequesterId(), requestDto.getRecipientId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
     @GetMapping("/{member-id}/{status}")
     public ResponseEntity getFriends(@PathVariable("member-id") long memberId,
                                      @PathVariable("status") String status) {

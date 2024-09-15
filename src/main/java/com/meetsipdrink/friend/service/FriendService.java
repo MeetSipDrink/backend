@@ -53,14 +53,14 @@ public class FriendService {
         }
     }
 
-    public void acceptFriendRequest(long friendId, long recipientId) {
-        Member member = memberRepository.findById(recipientId)
+    public void acceptFriendRequest(long requesterId, long recipientId) {
+        Member recipient = memberRepository.findById(recipientId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
-        Friend friendRequest = friendRepository.findById(friendId)
+        Friend friendRequest = friendRepository.findByRequester_MemberIdAndRecipient_MemberId(requesterId, recipientId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.FRIEND_REQUEST_NOT_FOUND));
 
-        if (!friendRequest.getRecipient().equals(member)) {
+        if (!friendRequest.getRecipient().equals(recipient)) {
             throw new BusinessLogicException(ExceptionCode.NOT_FRIEND_RECIPIENT);
         }
 
@@ -68,11 +68,12 @@ public class FriendService {
         friendRepository.save(friendRequest);
 
         Friend reverseFriendRequest = new Friend();
-        reverseFriendRequest.setRequester(member);
+        reverseFriendRequest.setRequester(friendRequest.getRecipient());
         reverseFriendRequest.setRecipient(friendRequest.getRequester());
         reverseFriendRequest.setFriendStatus(Friend.Status.ACCEPTED);
         friendRepository.save(reverseFriendRequest);
     }
+
 
     public void rejectFriendRequest(long requesterId, long recipientId) {
         Member requester = memberRepository.findById(requesterId)

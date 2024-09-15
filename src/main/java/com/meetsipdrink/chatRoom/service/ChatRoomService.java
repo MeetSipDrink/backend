@@ -2,6 +2,8 @@ package com.meetsipdrink.chatRoom.service;
 
 import com.meetsipdrink.chatRoom.entity.ChatRoom;
 import com.meetsipdrink.chatRoom.repository.ChatRoomRepository;
+import com.meetsipdrink.member.entity.Member;
+import com.meetsipdrink.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,20 +15,21 @@ import java.util.List;
 @Service
 public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
+    private final MemberRepository memberRepository;
 
-    public ChatRoom createChatRoom(ChatRoom chatRoom) {
-        findAllChatRooms(chatRoom.getChatRoomId());
-        return chatRoomRepository.save(chatRoom);
-    }
+    //채팅방 생성
+//    public ChatRoom createChatRoom(String name, Long memberId) {
+//        Member member = memberRepository.findById(memberId)
+//                .orElseThrow(() -> new IllegalArgumentException("Invalid member ID"));
+//
+//        ChatRoom chatRoom = new ChatRoom(name, member);
+//        member.addChatRoom(chatRoom); // 양방향 관계 설정
+//
+//        return chatRoomRepository.save(chatRoom);
+//    }
 
-    public ChatRoom findChatRoomById(Long chatRoomId) {
-        return chatRoomRepository.findById(chatRoomId).orElse(null);
-    }
 
-    public List<ChatRoom> findAllChatRooms(Long chatRoomId) {
-        return chatRoomRepository.findAll();
-    }
-
+    //입장
     public boolean addParticipantToChatRoom(Long chatRoomId, String username) {
         ChatRoom chatRoom = findChatRoomById(chatRoomId);
         if (chatRoom == null) {
@@ -37,6 +40,7 @@ public class ChatRoomService {
         return added;
     }
 
+    //퇴장
     public void removeParticipantFromChatRoom(Long chatRoomId, String username) {
         ChatRoom chatRoom = findChatRoomById(chatRoomId);
         if (chatRoom != null) {
@@ -44,4 +48,15 @@ public class ChatRoomService {
             chatRoomRepository.save(chatRoom);
         }
     }
+
+
+
+    public ChatRoom findChatRoomById(Long chatRoomId) {
+        return chatRoomRepository.findById(chatRoomId).orElse(null);
+    }
+
+    public List<ChatRoom> findAllChatRooms(Long chatRoomId) {
+        return chatRoomRepository.findAll();
+    }
+
 }
