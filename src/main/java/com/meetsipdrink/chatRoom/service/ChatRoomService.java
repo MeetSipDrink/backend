@@ -17,16 +17,16 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
 
-    //채팅방 생성
-//    public ChatRoom createChatRoom(String name, Long memberId) {
-//        Member member = memberRepository.findById(memberId)
-//                .orElseThrow(() -> new IllegalArgumentException("Invalid member ID"));
-//
-//        ChatRoom chatRoom = new ChatRoom(name, member);
-//        member.addChatRoom(chatRoom); // 양방향 관계 설정
-//
-//        return chatRoomRepository.save(chatRoom);
-//    }
+//    채팅방 생성
+    public ChatRoom createChatRoom(String name, Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid member ID"));
+
+        ChatRoom chatRoom = new ChatRoom(name, member);
+        member.addChatRoom(chatRoom); // 양방향 관계 설정
+
+        return chatRoomRepository.save(chatRoom);
+    }
 
 
     //입장

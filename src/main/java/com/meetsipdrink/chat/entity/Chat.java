@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -18,13 +15,21 @@ public class Chat extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long chatRoomId; // 기본 키로 사용할 필드
-    private String sender;
-    private String content;
-    // private MessageType type; // 필요에 따라 주석을 해제
+    private Long chatId;
 
-    // @Getter
-    // public enum MessageType {
-    //     CHAT, JOIN, LEAVE
-    // }
+    @Column(nullable = false)
+    private String chatRoomId;
+
+    @Column(nullable = false)
+    private String sender;
+
+    @Column(nullable = false)
+    private String content;
+
+    @Enumerated(EnumType.STRING)
+    private MessageType type;
+
+    public enum MessageType {
+        CHAT, JOIN, LEAVE
+    }
 }

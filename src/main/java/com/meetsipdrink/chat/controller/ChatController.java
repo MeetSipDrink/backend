@@ -23,8 +23,10 @@ public class ChatController {
     public Chat addUser(@Payload Chat chat,
                                SimpMessageHeaderAccessor headerAccessor) {
         // 사용자 이름을 웹소켓 세션에 저장
+        //SimpMessageHeaderAccessor  STOMP 메시지의 헤더에 접근하거나 헤더 정보를 수정할 수 있는 유틸리티 클래스
         headerAccessor.getSessionAttributes().put("username", chat.getSender());
         return chat;
     }
 
 }
+

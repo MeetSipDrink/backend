@@ -12,6 +12,10 @@ public class ChatDto {
         private String chatRoomId;
         private String sender;
         private String content;
+        private MessageType type;  // 메시지 타입 (예: CHAT, JOIN, LEAVE)
+        public enum MessageType {
+            CHAT, JOIN, LEAVE
+        }
 
     }
 

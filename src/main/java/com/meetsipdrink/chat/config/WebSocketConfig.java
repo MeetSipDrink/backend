@@ -39,7 +39,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.setApplicationDestinationPrefixes("/app");
         // "/app"으로 시작하는 메시지들은 메시지 매핑 핸들러로 라우팅됨.
 
+
     }
+
+
 }
     //즉 다수에게 메세지를 보낼때는 '/topic/주소', 특정대상에게 메세지를 보낼 때는 '/queue/주소'의 방식을 택
 
