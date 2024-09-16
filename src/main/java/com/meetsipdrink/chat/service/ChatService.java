@@ -1,4 +1,4 @@
-package com.meetsipdrink.chat.service;
-
-public class ChatService {
-}
+//package com.meetsipdrink.chat.service;
+//
+//public class ChatService {
+//}

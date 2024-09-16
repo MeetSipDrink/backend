@@ -1,4 +1,4 @@
-package com.meetsipdrink.chat.entity;
-
-public class Chat {
-}
+//package com.meetsipdrink.chat.entity;
+//
+//public class Chat {
+//}

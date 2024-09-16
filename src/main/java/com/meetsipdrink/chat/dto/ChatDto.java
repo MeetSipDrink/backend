@@ -1,4 +1,4 @@
-package com.meetsipdrink.chat.dto;
-
-public class ChatDto {
-}
+//package com.meetsipdrink.chat.dto;
+//
+//public class ChatDto {
+//}
