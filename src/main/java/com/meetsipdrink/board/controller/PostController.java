@@ -58,25 +58,18 @@ public class PostController {
                 new SingleResponseDto<>(mapper.postToPostResponseDto(post)), HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity getPosts(@Positive @RequestParam int page, @Positive @RequestParam int size,
-                                   @RequestParam String sort) {
-        Sort sortOrder = Sort.by(sort.split("_")[0]).ascending();
-        if(sort.split("_")[1].equalsIgnoreCase("desc")) {
-            sortOrder = sortOrder.descending();
-        }
-
-        Page<Post> pagePost = postService.findPostsSort(page - 1, size, sortOrder);
-        List<Post> posts = pagePost.getContent();
-        return new ResponseEntity<>(
-                new MultiResponseDto<>(mapper.postsToPostResponseDtos(posts), pagePost), HttpStatus.OK);
-    }
-
     @GetMapping("/search/title")
-    public ResponseEntity searchTitle (@RequestParam("keyword") String keyword,
-                                  @PageableDefault(sort = "postId", direction = Sort.Direction.DESC) Pageable pageable) {
-        int page = pageable.getPageNumber() > 0 ? pageable.getPageNumber() - 1 : 0;
-        pageable = PageRequest.of(page, pageable.getPageSize(), pageable.getSort());
+    public ResponseEntity searchTitle( @RequestParam("keyword") String keyword,
+                                       @RequestParam(required = false) String sort,
+                                       @PageableDefault(sort = "postId", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        if (sort != null) {
+            Sort sortOrder = Sort.by(sort.split("_")[0]).ascending();
+            if (sort.split("_")[1].equalsIgnoreCase("desc")) {
+                sortOrder = sortOrder.descending();
+            }
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOrder);
+        }
 
         Page<Post> searchList = postService.searchPostTitle(pageable, keyword);
         List<PostDto.Response> responseList = searchList.stream()
@@ -86,10 +79,17 @@ public class PostController {
                 new MultiResponseDto<>(responseList, searchList), HttpStatus.OK);
     }
     @GetMapping("/search/content")
-    public ResponseEntity searchContent (@RequestParam("keyword") String keyword,
-                                  @PageableDefault(sort = "postId", direction = Sort.Direction.DESC) Pageable pageable) {
-        int page = pageable.getPageNumber() > 0 ? pageable.getPageNumber() - 1 : 0;
-        pageable = PageRequest.of(page, pageable.getPageSize(), pageable.getSort());
+    public ResponseEntity searchContent(@RequestParam("keyword") String keyword,
+                                        @RequestParam(required = false) String sort,
+                                        @PageableDefault(sort = "postId", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        if (sort != null) {
+            Sort sortOrder = Sort.by(sort.split("_")[0]).ascending();
+            if (sort.split("_")[1].equalsIgnoreCase("desc")) {
+                sortOrder = sortOrder.descending();
+            }
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOrder);
+        }
 
         Page<Post> searchList = postService.searchPostContent(pageable, keyword);
         List<PostDto.Response> responseList = searchList.stream()
@@ -100,10 +100,17 @@ public class PostController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity searchTitleOrContent (@RequestParam("keyword") String keyword,
-                                  @PageableDefault(sort = "postId", direction = Sort.Direction.DESC) Pageable pageable) {
-        int page = pageable.getPageNumber() > 0 ? pageable.getPageNumber() - 1 : 0;
-        pageable = PageRequest.of(page, pageable.getPageSize(), pageable.getSort());
+    public ResponseEntity searchTitleOrContent(@RequestParam("keyword") String keyword,
+                                               @RequestParam(required = false) String sort,
+                                               @PageableDefault(sort = "postId", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        if (sort != null) {
+            Sort sortOrder = Sort.by(sort.split("_")[0]).ascending();
+            if (sort.split("_")[1].equalsIgnoreCase("desc")) {
+                sortOrder = sortOrder.descending();
+            }
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOrder);
+        }
 
         Page<Post> searchList = postService.searchPostTitleOrContent(pageable, keyword);
         List<PostDto.Response> responseList = searchList.stream()
