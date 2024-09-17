@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-@Entity
+@Entity(name = "chat")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,7 +18,7 @@ public class Chat extends Auditable {
     private Long chatId;
 
     @Column(nullable = false)
-    private String chatRoomId;
+    private Long chatRoomId;
 
     @Column(nullable = false)
     private String sender;

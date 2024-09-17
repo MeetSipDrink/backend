@@ -112,7 +112,7 @@ public class Member extends Auditable {
             this.chatRoom.removeMember(this);  // 기존 채팅방에서 제거
         }
         this.chatRoom = chatRoom;
-        if (chatRoom != null && !chatRoom.getParticipants().contains(this)) {
+        if (chatRoom != null && !chatRoom.getParticipant().contains(this)) {
             chatRoom.addMember(this);  // 새 채팅방에 추가
         }
     }

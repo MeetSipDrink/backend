@@ -1,4 +1,4 @@
-package com.meetsipdrink.webSocKet.handler;
+package com.meetsipdrink.chat.handler;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Component
-public class WebSocketHandler extends TextWebSocketHandler {
+public class ChatWebSocketHandler extends TextWebSocketHandler {
     private final Set<WebSocketSession> sessions = new HashSet<>();
 
     @Override

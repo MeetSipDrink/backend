@@ -16,7 +16,7 @@ public class ChatRoomDto {
     @Setter
     public static class Post{
         private String roomName;
-        private Set<String> participants;
+        private Set<String> participant;
 
     }
 

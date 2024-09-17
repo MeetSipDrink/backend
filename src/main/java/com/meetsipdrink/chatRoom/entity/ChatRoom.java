@@ -1,6 +1,7 @@
 package com.meetsipdrink.chatRoom.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.meetsipdrink.audit.Auditable;
+import com.meetsipdrink.chatRoomParticipant.entity.ChatRoomParticipant;
 import com.meetsipdrink.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,26 +18,35 @@ public class ChatRoom  extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ChatRoomId;
+    private Long chatRoomId;
 
     @Column(name = "chat_room_name", nullable = false)
-    private String ChatRoomName;
+    private String chatRoomName;
 
+
+
+    // 방장 변경 메서드
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Long memberId;
+    @JoinColumn(name = "host_id")  // 방장 정보를 저장할 외래키
+    private Member host;
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference
-    private Set<Member> participants = new HashSet<>();
+    private Set<Member> participant = new HashSet<>();
+
+    public ChatRoom(String chatRoomName, Member host ) {
+        this.chatRoomName = chatRoomName;
+        this.host = host;
+    }
 
     public void addMember(Member member) {
-        participants.add(member);
+        participant.add(member);
         member.setChatRoom(this);
     }
 
     public void removeMember(Member member) {
-        participants.remove(member);
+        participant.remove(member);
         member.removeChatRoom();
     }
 
