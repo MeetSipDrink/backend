@@ -1,2 +1,8 @@
-package com.meetsipdrink.chatRoomParticipant.mapper;public class ChatRoomMapper {
+package com.meetsipdrink.chatRoomParticipant.mapper;
+
+
+import org.mapstruct.Mapper;
+
+@Mapper()
+public interface ChatRoomParticipantMapper  {
 }
