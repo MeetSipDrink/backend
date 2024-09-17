@@ -1,8 +1,6 @@
-package com.meetsipdrink.chat.handler;
+package com.meetsipdrink.webSocKet.handler;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -12,10 +10,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class ChatWebSocketHandler extends TextWebSocketHandler {
+public class WebSocketHandler extends TextWebSocketHandler {
     private final Set<WebSocketSession> sessions = new HashSet<>();
 
     @Override
