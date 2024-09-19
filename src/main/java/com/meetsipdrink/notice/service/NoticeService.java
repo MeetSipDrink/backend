@@ -54,9 +54,9 @@ public class NoticeService {
         Optional.ofNullable(notice.getContent())
                 .ifPresent(content -> findNotice.setContent(content));
 
-        if (notice.getImageUrls() != null && !notice.getImageUrls().isEmpty()) {
-            findNotice.setImageUrls(notice.getImageUrls());
-        }
+
+        findNotice.setImageUrls(notice.getImageUrls());
+
 
         return noticeRepository.save(findNotice);
     }
