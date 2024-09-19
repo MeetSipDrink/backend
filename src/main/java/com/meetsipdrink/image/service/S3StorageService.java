@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Slf4j
 public class S3StorageService implements ImageService {
-    private static final String BUCKET_NAME = "meetsipdrink";
+    private static final String BUCKET_NAME = "meetsipdrink-bucket";
     private static final String BUCKET_COFFEE_IMAGE_PATH = "imageserver";
     private final S3Client s3Client;
 
