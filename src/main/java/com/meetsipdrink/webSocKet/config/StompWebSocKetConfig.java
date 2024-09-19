@@ -12,9 +12,7 @@ public class StompWebSocKetConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/chattings")
-                .setAllowedOrigins("*") // 모든 출처에서 연결 허용
-                .withSockJS(); // SockJS 사용
+        registry.addEndpoint("/chat").setAllowedOrigins("http://10.0.2.2:8080").withSockJS();
     }
 
     @Override
