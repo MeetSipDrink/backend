@@ -13,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.HashSet;
+
 
 @Transactional
 @Service
@@ -20,6 +23,7 @@ public class PostCommentService {
     private final PostService postService;
     private final MemberService memberService;
     private final PostCommentRepository postCommentRepository;
+    private final PostRepository postRepository;
 
     public PostCommentService(PostService postService,
                               MemberService memberService,
@@ -27,6 +31,7 @@ public class PostCommentService {
         this.postService = postService;
         this.memberService = memberService;
         this.postCommentRepository = postCommentRepository;
+        this.postRepository = postRepository;
     }
 
     public PostComment createPostComment(PostComment postComment) throws IllegalArgumentException {
@@ -36,6 +41,24 @@ public class PostCommentService {
         postComment.setPost(post);
         postComment.setMember(member);
 
+        if (postComment.getParentComment() != null) {
+            // 부모 댓글이 있는 경우, 부모 댓글을 검증하여 설정
+            PostComment parentComment = postCommentRepository.findById(postComment.getParentComment().getPostCommentId())
+                    .orElseThrow(() -> new IllegalArgumentException("부모 댓글을 찾을 수 없습니다."));
+
+            // 부모 댓글이 동일한 게시물에 속하는지 확인
+            if (parentComment.getPost().getPostId() != post.getPostId()) {
+                throw new IllegalArgumentException("부모 댓글이 현재 게시물에 속하지 않습니다.");
+            }
+
+            postComment.setParentComment(parentComment);
+        } else {
+            // 부모 댓글이 없을 경우, 최상위 댓글로 설정
+            postComment.setParentComment(null);
+        }
+
+        post.setCommentCount(post.getCommentCount() + 1);
+        postRepository.save(post);
         return postCommentRepository.save(postComment);
     }
 
@@ -64,7 +87,12 @@ public class PostCommentService {
             throw new BusinessLogicException(ExceptionCode.BOARD_UNAUTHORIZED_ACTION);
         }
 
+        Post post = findPostComment.getPost();
+        int commentCountToRemove = countComments(findPostComment, new HashSet<Long>());
         postCommentRepository.delete(findPostComment);
+        int newCommentCount = post.getCommentCount() - commentCountToRemove;
+        post.setCommentCount(newCommentCount);
+        postRepository.save(post);
     }
 
     public PostComment findVerifiedPostComment(long postCommentId) {
@@ -72,5 +100,19 @@ public class PostCommentService {
         PostComment findPostComment = optionalPostComment.orElseThrow(() ->
                 new BusinessLogicException(ExceptionCode.BOARD_COMMENT_NOT_FOUND));
         return findPostComment;
+    }
+
+    private int countComments(PostComment postComment, Set<Long> visited) {
+        if (visited.contains(postComment.getPostCommentId())) {
+            // 이미 방문한 댓글이면 카운트하지 않음
+            return 0;
+        }
+        visited.add(postComment.getPostCommentId());
+
+        int count = 1; // 현재 댓글 카운트
+        for (PostComment reply : postComment.getReplies()) {
+            count += countComments(reply, visited);
+        }
+        return count;
     }
 }
