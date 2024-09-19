@@ -21,13 +21,13 @@ public class ChatController {
     @MessageMapping("/chat.sendMessage")
     public void sendMessage(@Payload Chat chat) {
         log.info("Sending message: {}", chat);
-        messagingTemplate.convertAndSend("/topic/chatRoom/" + chat.getChatRoomId(), chat); // 특정 채팅방으로 메시지 전송
+        messagingTemplate.convertAndSend("/topic/chatrooms/" + chat.getChatRoomId(), chat); // 특정 채팅방으로 메시지 전송
     }
 
     @MessageMapping("/chat.addUser")
     public void addUser(@Payload Chat chat, SimpMessageHeaderAccessor headerAccessor) {
         headerAccessor.getSessionAttributes().put("username", chat.getSender());
         log.info("User joined: {}", chat.getSender());
-        messagingTemplate.convertAndSend("/topic/chatRoom/" + chat.getChatRoomId(), chat); // 특정 채팅방으로 사용자 추가 메시지 전송
+        messagingTemplate.convertAndSend("/topic/chatrooms/" + chat.getChatRoomId(), chat); // 특정 채팅방으로 사용자 추가 메시지 전송
     }
 }

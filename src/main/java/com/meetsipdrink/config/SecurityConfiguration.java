@@ -52,6 +52,7 @@ public class SecurityConfiguration {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
+                        .antMatchers("/chat/**").permitAll()
                         .anyRequest().permitAll());
 
         return http.build();
