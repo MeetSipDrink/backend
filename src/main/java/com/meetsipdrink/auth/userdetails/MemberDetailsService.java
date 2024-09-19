@@ -28,46 +28,11 @@ public class MemberDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Member> optionalMember = memberRepository.findByEmail(username);
         Member findMember = optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-        return new MemberDetail(findMember);
+        return new org.springframework.security.core.userdetails.User(
+                findMember.getEmail(),
+                findMember.getPassword(),
+                authorityUtils.createAuthorities(findMember.getRoles())
+        );
     }
 
-    private final class MemberDetail extends Member implements UserDetails{
-
-        MemberDetail(Member member) {
-            setMemberId(member.getMemberId());
-            setEmail(member.getEmail());
-            setPassword(member.getPassword());
-            setRoles(member.getRoles());
-        }
-
-        @Override
-        public Collection<? extends GrantedAuthority> getAuthorities() {
-            return authorityUtils.createAuthorities(getRoles());
-        }
-
-        @Override
-        public String getUsername() {
-            return getEmail();
-        }
-
-        @Override
-        public boolean isAccountNonExpired() {
-            return true;
-        }
-
-        @Override
-        public boolean isAccountNonLocked() {
-            return true;
-        }
-
-        @Override
-        public boolean isCredentialsNonExpired() {
-            return true;
-        }
-
-        @Override
-        public boolean isEnabled() {
-            return true;
-        }
-    }
 }
