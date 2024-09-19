@@ -67,6 +67,9 @@ public class Member extends Auditable {
     @Column(name = "member_chat_room_status")
     private Boolean chatRoomStatus = false;
 
+//    @Column(name = "member_chat_status")
+//    private String chatRoomStatus = false;
+
     @Column(name = "member_ban_count")
     private Integer banCount = 0;
 
@@ -100,19 +103,25 @@ public class Member extends Auditable {
     @OneToMany(mappedBy = "blockerMember", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ban> bans = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private Set<ChatRoom> chatRooms = new HashSet<>();
-//
-////    public void addChatRoom(ChatRoom chatRoom) {
-//        chatRooms.add(chatRoom);
-//        chatRoom.setMember(this);
-//    }
-//
-//    public void removeChatRoom(ChatRoom chatRoom) {
-//        chatRooms.remove(chatRoom);
-//        chatRoom.setMember(null);
-//    }
-//
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chat_room_id")
+    @JsonManagedReference
+    private ChatRoom chatRoom;
+    public void setChatRoom(ChatRoom chatRoom) {
+        if (this.chatRoom != null) {
+            this.chatRoom.removeMember(this);  // 기존 채팅방에서 제거
+        }
+        this.chatRoom = chatRoom;
+        if (chatRoom != null && !chatRoom.getParticipant().contains(this)) {
+            chatRoom.addMember(this);  // 새 채팅방에 추가
+        }
+    }
+    public void removeChatRoom() {
+        if (this.chatRoom != null) {
+            this.chatRoom.removeMember(this); // 채팅방에서 멤버 제거
+            this.chatRoom = null; // 멤버의 채팅방 참조 제거
+        }
+    }
 
 
     public void setNotice(Notice notice) {
@@ -174,7 +183,6 @@ public class Member extends Auditable {
 
         @Getter
         private final String gender;
-
         memberGender(String gender) {
             this.gender = gender;
         }
@@ -183,12 +191,22 @@ public class Member extends Auditable {
     public enum memberStatus {
         isActive("활동중 회원"),
         isInactive("탈퇴한 회원");
-
         @Getter
         private final String status;
-
         memberStatus(String status) {
             this.status = status;
         }
     }
+
+//    public enum memberChatRoomStatus{
+//        AVAILABLE("채팅방 입장 전"),
+//        IN_CHATROOM("채팅방 입장 후");
+//        @Getter
+//        private final String ChatStatus;
+//        memberChatRoomStatus( String chatStatus) {
+//            this.ChatStatus = chatStatus;
+//            }
+//
+//    }
+
 }

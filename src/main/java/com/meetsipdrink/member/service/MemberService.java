@@ -12,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -39,8 +38,6 @@ public class MemberService {
 
     }
 
-
-
     public Member updateMember(Member member) {
         Member findMember = isvalidMember(member.getMemberId());
 
@@ -64,18 +61,14 @@ public class MemberService {
         return memberRepository.save(findMember);
     }
 
-
-
     public Member findMember(long memberId) {
         return isvalidMember(memberId);
     }
-
 
     public Page<Member> findMembers(int page, int size) {
         return memberRepository.findAll(PageRequest.of(page, size,
                 Sort.by("memberId").descending()));
     }
-
 
     public void deleteMember (long memberId) {
         Member member = findMember(memberId);
@@ -83,9 +76,6 @@ public class MemberService {
         member.setNickname("탈퇴한회원" + memberId);
         memberRepository.save(member);
     }
-
-
-
 
     private void verifyExistMember(String email) {
         Optional<Member> member = memberRepository.findByEmail(email);
@@ -107,6 +97,7 @@ public class MemberService {
             throw new BusinessLogicException(ExceptionCode.NICKNAME_EXISTS);
         }
     }
+
     private Member findVerifiedMember(String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));

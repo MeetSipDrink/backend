@@ -1,50 +1,55 @@
 package com.meetsipdrink.chatRoom.entity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.meetsipdrink.audit.Auditable;
+import com.meetsipdrink.chatRoomParticipant.entity.ChatRoomParticipant;
 import com.meetsipdrink.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+
 
 @Entity(name = "chat_room")
 @Getter
 @Setter
 @NoArgsConstructor
 public class ChatRoom  extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ChatRoomId;
+    private Long chatRoomId;
 
     @Column(name = "chat_room_name", nullable = false)
-    private String ChatRoomName;
+    private String chatRoomName;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "member_id")
-//    private Long memberId;
 
-    @ElementCollection
-    private Set<String> participants = new HashSet<>();
 
-    public boolean addParticipant(String username) {
-        if (participants.size() >= 6) {
-            return false;
-        }
-        return participants.add(username);
+    // 방장 변경 메서드
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "host_id")  // 방장 정보를 저장할 외래키
+    private Member host;
+
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private Set<Member> participant = new HashSet<>();
+
+    public ChatRoom(String chatRoomName, Member host ) {
+        this.chatRoomName = chatRoomName;
+        this.host = host;
     }
 
-    public void removeParticipant(String username) {
-        participants.remove(username);
+    public void addMember(Member member) {
+        participant.add(member);
+        member.setChatRoom(this);
     }
 
-
-//    public ChatRoom(String name, Member member) {
-//        this.name = name;
-//        this.member = member;
-//    }
-//
+    public void removeMember(Member member) {
+        participant.remove(member);
+        member.removeChatRoom();
+    }
 
 }
 
