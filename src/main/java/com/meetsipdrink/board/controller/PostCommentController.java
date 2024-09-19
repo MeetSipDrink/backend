@@ -57,11 +57,14 @@ public class PostCommentController {
     }
 
     @GetMapping
-    public ResponseEntity getPostComments() {
-        List<PostComment> postComments = postCommentService.findPostComments();
-        return new ResponseEntity<>(
-               mapper.postCommentsToPostCommentResponseDtos(postComments), HttpStatus.OK);
+    public ResponseEntity<List<PostCommentDto.Response>> getPostComments(@PathVariable("post-id") @Positive long postId) {
+        List<PostComment> postComments = postCommentService.findPostCommentsByPostId(postId);
+        List<PostCommentDto.Response> responseDtos = mapper.postCommentsToPostCommentResponseDtos(postComments);
+
+        // 빈 리스트일 경우에도 200 OK 응답을 반환
+        return new ResponseEntity<>(responseDtos, HttpStatus.OK);
     }
+
 
     @DeleteMapping("/{comment-id}")
     public ResponseEntity deletePostComment(@PathVariable("comment-id") @Positive long postCommentId,
