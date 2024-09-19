@@ -52,8 +52,9 @@ public class PostCommentService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostComment> findPostComments() {
-        return postCommentRepository.findAll();
+    public List<PostComment> findPostCommentsByPostId(long postId) {
+        Post post = postService.findVerifiedPost(postId); // postId에 해당하는 Post 검증
+        return postCommentRepository.findByPost(post); // PostCommentRepository에 해당하는 메서드 추가 필요
     }
 
     public void deletePostComment(long postCommentId, long memberId) {
