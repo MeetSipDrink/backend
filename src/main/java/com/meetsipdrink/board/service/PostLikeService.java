@@ -27,9 +27,9 @@ public class PostLikeService {
         this.postRepository = postRepository;
     }
 
-    public synchronized void checkLike(long memberId, long postId) {
+    public synchronized void checkLike(String email, long postId) {
         Post post = postService.findVerifiedPost(postId);
-        Member member = memberService.findVerifiedMember(memberId);
+        Member member = memberService.findMemberByEmail(email);
         Optional<PostLike> optionalPostLike = postLikeRepository.findAllByMemberAndPost(member, post);
 
         if(optionalPostLike.isPresent()) {
@@ -46,8 +46,8 @@ public class PostLikeService {
         postRepository.save(post);
     }
 
-    public boolean findLike(long memberId, long postId) {
-        Optional<PostLike> optionalPostLike = postLikeRepository.findPostLikeByMemberMemberIdAndPostPostId(memberId, postId);
+    public boolean findLike(String email, long postId) {
+        Optional<PostLike> optionalPostLike = postLikeRepository.findPostLikeByMemberEmailAndPostPostId(email, postId);
         return optionalPostLike.isPresent();
     }
 }

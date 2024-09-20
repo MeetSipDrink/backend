@@ -11,11 +11,11 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface PostCommentMapper {
 
-    @Mapping(source = "memberId", target = "member.memberId")
+    @Mapping(source = "email", target = "member.email")
     @Mapping(target = "parentComment", expression = "java(requestBody.getParentCommentId() != null ? new PostComment(requestBody.getParentCommentId()) : null)")
     PostComment postCommentPostDtoToPostComment(PostCommentDto.Post requestBody);
 
-    @Mapping(source = "memberId", target = "member.memberId")
+    @Mapping(source = "email", target = "member.email")
     PostComment postCommentPatchDtoToPostComment(PostCommentDto.Patch requestBody);
 
     @Mapping(source = "member.memberId", target = "memberId")

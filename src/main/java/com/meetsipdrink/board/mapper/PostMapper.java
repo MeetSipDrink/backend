@@ -10,10 +10,10 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {PostCommentMapper.class})
 public interface PostMapper {
 
-    @Mapping(source = "memberId", target = "member.memberId")
+    @Mapping(source = "email", target = "member.email")
     Post postPostDtoToPost(PostDto.Post requestBody);
 
-    @Mapping(source = "memberId", target = "member.memberId")
+    @Mapping(source = "email", target = "member.email")
     Post postPatchDtoToPost(PostDto.Patch requestBody);
 
     @Mapping(source = "member.memberId", target = "memberId")

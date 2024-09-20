@@ -6,6 +6,7 @@ import com.meetsipdrink.member.entity.Member;
 import com.meetsipdrink.member.service.MemberService;
 import com.meetsipdrink.notice.entity.Notice;
 import com.meetsipdrink.notice.repository.NoticeRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+@Slf4j
 @Transactional
 @Service
 public class NoticeService {
@@ -27,12 +29,12 @@ public class NoticeService {
         this.memberService = memberService;
     }
 
-    public Notice createNotice(Notice notice, long memberId) throws IllegalArgumentException {
-        Member member = memberService.findVerifiedMember(memberId);
+    public Notice createNotice(Notice notice, String email) throws IllegalArgumentException {
+        Member member = memberService.findMemberByEmail(email);
         notice.setMember(member);
 
-        if (memberId != 1) {
-            throw new BusinessLogicException(ExceptionCode.NOTICE_UNAUTHORIZED_ACTION); // 관리자 검증 실패
+        if (!member.getRoles().toString().contains("ADMIN")) {
+            throw new BusinessLogicException(ExceptionCode.NOTICE_UNAUTHORIZED_ACTION);
         }
 
         if (notice.getImageUrls() != null && notice.getImageUrls().isEmpty()) {
@@ -42,10 +44,10 @@ public class NoticeService {
         return noticeRepository.save(notice);
     }
 
-    public Notice updateNotice(long noticeId, Notice notice, long memberId) {
+    public Notice updateNotice(long noticeId, Notice notice, String email) {
         Notice findNotice = findVerifiedNotice(noticeId);
 
-        if (memberId != 1) {
+        if (!email.equals("admin@gmail.com")) {
             throw new BusinessLogicException(ExceptionCode.NOTICE_UNAUTHORIZED_ACTION); // 관리자 검증 실패
         }
 
@@ -73,10 +75,10 @@ public class NoticeService {
         return noticeRepository.findAll(pageable);
     }
 
-    public void deleteNotice(long noticeId, long memberId) {
+    public void deleteNotice(long noticeId, String email) {
         Notice findNotice = findVerifiedNotice(noticeId);
 
-        if (memberId != 1) {
+        if (!email.equals("admin@gmail.com")) {
             throw new BusinessLogicException(ExceptionCode.NOTICE_UNAUTHORIZED_ACTION); // 관리자 검증 실패
         }
 

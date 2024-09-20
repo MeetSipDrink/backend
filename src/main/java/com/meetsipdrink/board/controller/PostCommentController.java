@@ -10,6 +10,7 @@ import com.meetsipdrink.dto.SingleResponseDto;
 import com.meetsipdrink.utils.UriCreator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -35,7 +36,9 @@ public class PostCommentController {
 
     @PostMapping
     public ResponseEntity postPostComment(@PathVariable("post-id") @Positive long postId,
-                                          @Valid @RequestBody PostCommentDto.Post requestBody) {
+                                          @Valid @RequestBody PostCommentDto.Post requestBody,
+                                          @AuthenticationPrincipal Object principal) {
+        requestBody.setEmail(principal.toString());
         PostComment postComment = mapper.postCommentPostDtoToPostComment(requestBody);
 
         Post post = postService.findPostById(postId);
@@ -49,9 +52,11 @@ public class PostCommentController {
 
     @PatchMapping("/{comment-id}")
     public ResponseEntity patchPostComment(@PathVariable("comment-id") @Positive long postCommentId,
-                                           @Valid @RequestBody PostCommentDto.Patch requestBody) {
+                                           @Valid @RequestBody PostCommentDto.Patch requestBody,
+                                           @AuthenticationPrincipal Object principal) {
+        requestBody.setEmail(principal.toString());
         PostComment updatePostComment = mapper.postCommentPatchDtoToPostComment(requestBody);
-        PostComment postComment = postCommentService.updatePostComment(postCommentId, updatePostComment, requestBody.getMemberId());
+        PostComment postComment = postCommentService.updatePostComment(postCommentId, updatePostComment, requestBody.getEmail());
         return new ResponseEntity<>(
                 new SingleResponseDto<>(mapper.postCommentToPostCommentResponseDto(postComment)), HttpStatus.OK);
     }
@@ -68,8 +73,8 @@ public class PostCommentController {
 
     @DeleteMapping("/{comment-id}")
     public ResponseEntity deletePostComment(@PathVariable("comment-id") @Positive long postCommentId,
-                                            @RequestParam("memberId") @Positive long memberId) {
-        postCommentService.deletePostComment(postCommentId, memberId);
+                                            @AuthenticationPrincipal Object principal) {
+        postCommentService.deletePostComment(postCommentId, principal.toString());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

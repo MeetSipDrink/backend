@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Transactional
@@ -28,7 +29,7 @@ public class PostService {
     }
 
     public Post createPost(Post post) throws IllegalArgumentException {
-        Member member = memberService.findVerifiedMember(post.getMember().getMemberId());
+        Member member = memberService.findMemberByEmail(post.getMember().getEmail());
         post.setMember(member);
 
         return postRepository.save(post);
@@ -73,10 +74,10 @@ public class PostService {
         return postRepository.searchByTitleOrContent(pageable, keyword);
     }
 
-    public void deletePost(long memberId, long postId) {
+    public void deletePost(String email, long postId) {
         Post findPost = findVerifiedPost(postId);
 
-        if(findPost.getMember().getMemberId() == memberId) {
+        if(Objects.equals(findPost.getMember().getEmail(), email)) {
             postRepository.delete(findPost);
         }else {
             throw new BusinessLogicException(ExceptionCode.BOARD_UNAUTHORIZED_ACTION);
