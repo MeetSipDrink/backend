@@ -24,8 +24,8 @@ public class FriendService {
     private final MemberRepository memberRepository;
     private final BanRepository banRepository;
 
-    public void addFriend(long requesterId, long recipientId) {
-        Member requester = memberRepository.findById(requesterId)
+    public Long addFriend(String email, long recipientId) {
+        Member requester = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
         Member recipient = memberRepository.findById(recipientId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
@@ -57,13 +57,15 @@ public class FriendService {
             friendRequest.setFriendStatus(Friend.Status.PENDING);
             friendRepository.save(friendRequest);
         }
+
+        return requester.getMemberId();
     }
 
-    public void acceptFriendRequest(long requesterId, long recipientId) {
-        Member recipient = memberRepository.findById(recipientId)
+    public void acceptFriendRequest(String email, long recipientId) {
+        Member recipient = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
-        Friend friendRequest = friendRepository.findByRequester_MemberIdAndRecipient_MemberId(requesterId, recipientId)
+        Friend friendRequest = friendRepository.findByRequester_MemberIdAndRecipient_email(email, recipientId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.FRIEND_REQUEST_NOT_FOUND));
 
         if (!friendRequest.getRecipient().equals(recipient)) {
@@ -81,8 +83,8 @@ public class FriendService {
     }
 
 
-    public void rejectFriendRequest(long requesterId, long recipientId) {
-        Member requester = memberRepository.findById(requesterId)
+    public void rejectFriendRequest(String email, long recipientId) {
+        Member requester = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
         Member recipient = memberRepository.findById(recipientId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
@@ -109,9 +111,9 @@ public class FriendService {
 //        }
 //    }
 
-    public void removeFriend(long memberId, long friendId) {
+    public void removeFriend(String email, long friendId) {
         // 1. 친구 관계 조회
-        List<Friend> friendRelations = friendRepository.findByRequester_MemberIdOrRecipient_MemberIdAndFriendStatus(memberId, friendId, Friend.Status.ACCEPTED);
+        List<Friend> friendRelations = friendRepository.findByRequester_EmailOrRecipient_MemberIdAndFriendStatus(email, friendId, Friend.Status.ACCEPTED);
 
         // 2. 양방향으로 존재하는 친구 관계 삭제
         for (Friend friend : friendRelations) {
@@ -123,7 +125,7 @@ public class FriendService {
         Member requester = new Member();
         requester.setMemberId(friendId);
         Member recipient = new Member();
-        recipient.setMemberId(memberId);
+        recipient.setEmail(email);
 
         Friend reverseFriend = friendRepository.findByRequesterAndRecipient(requester, recipient);
         if (reverseFriend != null) {
@@ -134,8 +136,8 @@ public class FriendService {
 
 
     @Transactional(readOnly = true)
-    public List<Member> getFriends(long memberId, Friend.Status status) {
-        Member member = memberRepository.findById(memberId)
+    public List<Member> getFriends(String email, Friend.Status status) {
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
         List<Friend> friends = friendRepository.findByRequesterAndFriendStatus(member, status);
@@ -143,15 +145,14 @@ public class FriendService {
         for (Friend friend : friends) {
             friendMembers.add(friend.getRecipient());
         }
-        System.out.println("memberId: " + memberId + ", status: " + status);
         return friendMembers;
     }
 
 
     //특정 회원이랑 비교 근데 없어도 될 듯
     @Transactional(readOnly = true)
-    public Friend getFriend(long memberId, long friendId) {
-        Member member = memberRepository.findById(memberId)
+    public Friend getFriend(String email, long friendId) {
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
         Member friend = memberRepository.findById(friendId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
@@ -164,10 +165,10 @@ public class FriendService {
     }
 
 
-    public boolean isFriend(long memberId, long friendId) {
+    public boolean isFriend(String email, long friendId) {
         List<Friend.Status> statuses = Arrays.asList(Friend.Status.ACCEPTED, Friend.Status.PENDING);
-        return friendRepository.findByRequester_MemberIdAndRecipient_MemberIdAndFriendStatusIn(memberId, friendId, statuses).isPresent() ||
-                friendRepository.findByRequester_MemberIdAndRecipient_MemberIdAndFriendStatusIn(friendId, memberId, statuses).isPresent();
+        return friendRepository.findByRequester_EmailAndRecipient_MemberIdAndFriendStatusIn(email, friendId, statuses).isPresent() ||
+                friendRepository.findByRequester_MemberIdAndRecipient_EmailAndFriendStatusIn(friendId, email, statuses).isPresent();
     }
 
     public Friend.Status convertToFriendStatus(String status){
