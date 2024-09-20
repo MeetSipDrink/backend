@@ -54,7 +54,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Member member = (Member) authResult.getPrincipal();
 
         String accessToken = delegateAccessToken(member);
-        String refreshToken = delegateRefreshToken(member);
+        String refreshToken = delegateRefreshToken(member, accessToken);
         response.addCookie(createCookie(member.getEmail(), refreshToken));
         response.setHeader("Authorization", "Bearer " + accessToken);
         response.setHeader("Refresh", refreshToken);
@@ -78,13 +78,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         return acceessKey;
     }
 
-    private String delegateRefreshToken(Member member){
+    private String delegateRefreshToken(Member member , String accessToken){
         String subject = member.getEmail();
         Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
         String base64encodedSecretKey = jwtTokenizer.encodedBase64SecretKey(jwtTokenizer.getSecretKey());
 
         String refreshKey = jwtTokenizer.generateRefreshToken(
-                subject, expiration, base64encodedSecretKey);
+                subject, expiration, base64encodedSecretKey, accessToken);
 
         return refreshKey;
     }
@@ -105,7 +105,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     public Cookie createCookie(String userName, String refreshToken) {
         String cookieName = "refreshtoken";
-        String cookieValue = refreshToken; //
+        String cookieValue = refreshToken;
         Cookie cookie = new Cookie(cookieName, cookieValue);
         // 쿠키 속성 설정
         cookie.setHttpOnly(true);  //httponly 옵션 설정
