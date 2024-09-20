@@ -41,7 +41,7 @@ public enum ExceptionCode {
     INVALID_FRIEND_STATUS (404, "없는 친구 상태입니다"),
     // 친구 요청 관련
     UNAUTHORIZED_ACCESS(404, "친구요청을 없습니다."),
-
+    BANNED_MEMBER_CANNOT_SEND_REQUEST( 404,"벤한 친구는 친구요청을 할 수 없습니다"),
     // 메일 전송 관련
     UNABLE_TO_SEND_EMAIL(404, "이메일 전송에 실패했습니다."),
     NO_SUCH_ALGORITHM(404, "No_Such_Algorithm"),

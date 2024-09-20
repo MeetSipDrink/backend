@@ -7,7 +7,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/chatrooms/{chatRoomId}")
+@RequestMapping("/chatrooms/{chatRoomId}/participants")
 public class ChatRoomParticipantController {
     private final ChatRoomParticipantService participantService;
 
@@ -16,19 +16,16 @@ public class ChatRoomParticipantController {
     }
 
     @PostMapping("/{memberId}")
-    public ResponseEntity addParticipant (@PathVariable Long chatRoomId ,
-                                          @PathVariable Long memberId){
-        participantService.addParticipant(chatRoomId , memberId);
+    public ResponseEntity<Void> addParticipant(@PathVariable Long chatRoomId,
+                                               @PathVariable Long memberId) {
+        participantService.addParticipant(chatRoomId, memberId);
         return ResponseEntity.ok().build();
-
     }
 
     @DeleteMapping("/{memberId}")
-    public ResponseEntity removeParticipant (@PathVariable Long chatRoomId,
-                                             @PathVariable Long memberId){
-        participantService.removeParticipant(chatRoomId,memberId);
+    public ResponseEntity<Void> removeParticipant(@PathVariable Long chatRoomId,
+                                                  @PathVariable Long memberId) {
+        participantService.removeParticipant(chatRoomId, memberId);
         return ResponseEntity.ok().build();
     }
-
-
 }

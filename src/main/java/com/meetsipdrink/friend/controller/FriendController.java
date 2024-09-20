@@ -44,6 +44,16 @@ public class FriendController {
         friendService.acceptFriendRequest(requestDto.getRequesterId(), requestDto.getRecipientId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
+//    @GetMapping("/{member-id}/{status}")
+//    public ResponseEntity getFriends(@PathVariable("member-id") long memberId,
+//                                     @PathVariable("status") String status) {
+//        Friend.Status enumFriendStatus = friendService.convertToFriendStatus(status);
+//        List<Member> friends = friendService.getFriends(memberId, enumFriendStatus);
+//        List<FriendDto.ResponseDto> responseList = friendMapper.friendsToResponse(friends);
+//        return new ResponseEntity<>(new SingleResponseDto<>(responseList), HttpStatus.OK);
+//    }
+
+
     @GetMapping("/{member-id}/{status}")
     public ResponseEntity getFriends(@PathVariable("member-id") long memberId,
                                      @PathVariable("status") String status) {
@@ -52,6 +62,9 @@ public class FriendController {
         List<FriendDto.ResponseDto> responseList = friendMapper.friendsToResponse(friends);
         return new ResponseEntity<>(new SingleResponseDto<>(responseList), HttpStatus.OK);
     }
+
+
+
 
 
     @GetMapping("/{member-id}/friend/{friend-id}")
