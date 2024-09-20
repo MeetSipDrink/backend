@@ -2,6 +2,7 @@ package com.meetsipdrink.member.dto;
 
 
 import com.meetsipdrink.member.entity.Member;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -111,5 +112,16 @@ public class MemberDto {
         private String fcmToken;
 
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public class ChatRoomDto {
+        private Long memberId;
+        private String nickname;
+        private String email;
+    }
+
 
 }

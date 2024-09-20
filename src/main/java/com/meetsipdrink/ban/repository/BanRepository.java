@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface BanRepository extends JpaRepository<Ban, Long> {
     List<Ban> findByBlockerMember_MemberId(Long memberId);
     Optional<Ban> findByBlockerMemberAndBlockedMember(Member blockerMember, Member blockedMember);
-
+    boolean existsByBlockerMemberAndBlockedMember(Member blockerMember, Member blockedMember);
 }
 

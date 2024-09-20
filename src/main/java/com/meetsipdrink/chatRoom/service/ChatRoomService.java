@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,18 +25,20 @@ public class ChatRoomService {
     // 채팅방 생성 메서드
     public ChatRoom createChatRoom(String roomName, Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid member ID"));
+                .orElseThrow(() -> new IllegalArgumentException("Invalid member ID: " + memberId));
+        Optional<ChatRoom> existingChatRoom = chatRoomRepository.findByHost(member);
+        if (existingChatRoom.isPresent()) {
+            throw new IllegalStateException("This member (ID: " + memberId + ") already has a chat room.");
+        }
 
         ChatRoom chatRoom = new ChatRoom();
         chatRoom.setChatRoomName(roomName);
         chatRoom.setHost(member);
         member.setChatRoom(chatRoom);
-
         ChatRoom savedChatRoom = chatRoomRepository.save(chatRoom);
         participantService.addParticipant(savedChatRoom.getChatRoomId(), memberId);
         return savedChatRoom;
     }
-
     //참여자 추가  이거 participant 서비스단에사 구현
     public boolean addParticipantToChatRoom(Long chatRoomId, Long memberId) {
         participantService.addParticipant(chatRoomId, memberId);
@@ -50,7 +53,6 @@ public class ChatRoomService {
 //        }
 //        return success;
 //    }
-
 
 //        ChatRoom chatRoom = findChatRoomById(chatRoomId);
 //        if (chatRoom == null) {
@@ -67,21 +69,29 @@ public class ChatRoomService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid member ID"));
 
-        // ChatRoom에서 직접 멤버를 관리하지 않으므로 participantService에서 참여자를 제거
         participantService.removeParticipant(chatRoomId, memberId);
-
         // 마지막 참여자일 경우 채팅방 삭제
         int remainingParticipants = participantService.countParticipantInChatRoom(chatRoomId);
         if (remainingParticipants == 0) {
-            chatRoomRepository.deleteById(chatRoomId);
-            log.info("참여자가 없으므로 채팅방을 삭제했습니다. 채팅방 ID: {}", chatRoomId);
+            deleteChatRoom(chatRoomId);
         }
-        //채팅방삭제 참여자가 아예 없으면 삭제 .... ㅠㅠㅠㅠㅠㅠ
-        //채팅방 내용은 삭제 안하고 ...
     }
+    private void deleteChatRoom(Long chatRoomId) {
+        chatRoomRepository.deleteById(chatRoomId);
+        log.info("참여자가 없으므로 채팅방을 삭제했습니다. 채팅방 ID: {}", chatRoomId);
+    }
+
+
+
     public ChatRoom findChatRoomById(Long chatRoomId) {
-        return chatRoomRepository.findById(chatRoomId).orElse(null);
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid chat room ID"));
+        // 필요 시 Lazy 로딩된 필드를 접근
+        chatRoom.getHost().getMemberId(); // Lazy Loading 방지
+        return chatRoom;
     }
+
+
 
     public List<ChatRoom> findAllChatRooms() {
         return chatRoomRepository.findAll();
