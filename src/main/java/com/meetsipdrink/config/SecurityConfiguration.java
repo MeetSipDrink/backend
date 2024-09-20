@@ -6,6 +6,7 @@ import com.meetsipdrink.auth.handler.MemberAccessDeniedHandler;
 import com.meetsipdrink.auth.handler.MemberAuthenticationEntryPoint;
 import com.meetsipdrink.auth.jwt.JwtTokenizer;
 import com.meetsipdrink.auth.utils.CustomAuthorityUtils;
+import com.meetsipdrink.member.repository.MemberRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -87,7 +88,7 @@ public class SecurityConfiguration {
                     builder.getSharedObject(AuthenticationManager.class);
 
             JwtAuthenticationFilter jwtAuthenticationFilter =
-                    new JwtAuthenticationFilter(authenticationManager, jwtTokenizer);
+                    new JwtAuthenticationFilter(authenticationManager, jwtTokenizer, memberRepository);
             jwtAuthenticationFilter.setFilterProcessesUrl("/members/login");
 
             JwtVerificationFilter jwtVerificationFilter =

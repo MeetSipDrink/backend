@@ -87,16 +87,16 @@ public class Member extends Auditable {
     @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Friend> receivedFriendRequests = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private List<Post> posts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private List<PostLike> postLikes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private List<PostComment> postComments = new ArrayList<>();
 
-    @OneToOne(mappedBy = "member")
+    @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private Notice notice;
 
@@ -116,10 +116,10 @@ public class Member extends Auditable {
             chatRoom.addMember(this);  // 새 채팅방에 추가
         }
     }
-    public void removeChatRoom() {
-        if (this.chatRoom != null) {
-            this.chatRoom.removeMember(this); // 채팅방에서 멤버 제거
-            this.chatRoom = null; // 멤버의 채팅방 참조 제거
+    public void removeChatRoom(ChatRoom chatRoom) {
+        if (this.chatRoom != null && this.chatRoom.equals(chatRoom)) {
+            this.chatRoom = null;  // 해당 채팅방과의 관계를 끊음
+            chatRoom.removeMember(this);  // 채팅방에서도 이 멤버를 제거
         }
     }
 

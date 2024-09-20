@@ -50,9 +50,6 @@ public class MemberDto {
 
         private String alcoholType3;
 
-        @NotNull
-        private String fcmToken;
-
     }
 
     @Getter

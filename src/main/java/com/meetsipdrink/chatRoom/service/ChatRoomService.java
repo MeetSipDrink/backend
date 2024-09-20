@@ -21,7 +21,7 @@ public class ChatRoomService {
     private final MemberRepository memberRepository;
     private final ChatRoomParticipantService participantService;
 
-//    채팅방 생성
+    // 채팅방 생성 메서드
     public ChatRoom createChatRoom(String roomName, Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid member ID"));
@@ -30,6 +30,7 @@ public class ChatRoomService {
         chatRoom.setChatRoomName(roomName);
         chatRoom.setHost(member);
         member.setChatRoom(chatRoom);
+
         ChatRoom savedChatRoom = chatRoomRepository.save(chatRoom);
         participantService.addParticipant(savedChatRoom.getChatRoomId(), memberId);
         return savedChatRoom;
@@ -62,13 +63,19 @@ public class ChatRoomService {
 
     //참여자 제거 이거 participant 서비스단에사 구현
     public void removeParticipantFromChatRoom(Long chatRoomId, Long memberId) {
+        ChatRoom chatRoom = findChatRoomById(chatRoomId);
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid member ID"));
+
+        // ChatRoom에서 직접 멤버를 관리하지 않으므로 participantService에서 참여자를 제거
         participantService.removeParticipant(chatRoomId, memberId);
+
+        // 마지막 참여자일 경우 채팅방 삭제
         int remainingParticipants = participantService.countParticipantInChatRoom(chatRoomId);
         if (remainingParticipants == 0) {
             chatRoomRepository.deleteById(chatRoomId);
-            log.info("참여자가 없습니다. 채팅방 ID: {}", chatRoomId);
+            log.info("참여자가 없으므로 채팅방을 삭제했습니다. 채팅방 ID: {}", chatRoomId);
         }
-
         //채팅방삭제 참여자가 아예 없으면 삭제 .... ㅠㅠㅠㅠㅠㅠ
         //채팅방 내용은 삭제 안하고 ...
     }
