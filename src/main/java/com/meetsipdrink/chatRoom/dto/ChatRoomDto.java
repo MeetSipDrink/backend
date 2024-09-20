@@ -20,7 +20,11 @@ public class ChatRoomDto {
 
     }
 
-
-
+    @Getter
+    @Setter
+    public static class Request {
+        private String roomName;
+        private Long memberId;
+    }
 
 }
