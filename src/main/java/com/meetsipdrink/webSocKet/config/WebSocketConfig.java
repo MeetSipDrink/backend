@@ -28,7 +28,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/chat")
                 .setAllowedOrigins("*")
                 .addInterceptors(new HttpSessionHandshakeInterceptor())
-                .setHandshakeHandler(new DefaultHandshakeHandler());
+                .setHandshakeHandler(new DefaultHandshakeHandler())
+                .withSockJS();
     }
 
     @Override

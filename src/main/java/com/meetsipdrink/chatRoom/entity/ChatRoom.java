@@ -46,10 +46,16 @@ public class ChatRoom  extends Auditable {
         member.setChatRoom(this);
     }
 
+    // 멤버 제거
+// 멤버 제거
     public void removeMember(Member member) {
-        participant.remove(member);
-        member.removeChatRoom();
+        if (participant.contains(member)) {
+            participant.remove(member);  // 참여자 리스트에서 제거
+            member.setChatRoom(null);  // Member 객체에서도 ChatRoom 제거
+        }
     }
+
+
 
 }
 
