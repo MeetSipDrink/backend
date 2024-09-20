@@ -4,10 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.meetsipdrink.auth.dto.LoginDto;
 import com.meetsipdrink.auth.jwt.JwtTokenizer;
 import com.meetsipdrink.member.entity.Member;
+import com.meetsipdrink.member.repository.MemberRepository;
 import lombok.SneakyThrows;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -25,11 +28,13 @@ import java.util.Map;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenizer jwtTokenizer;
+    private final MemberRepository memberRepository;
 
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenizer jwtTokenizer) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenizer jwtTokenizer, MemberRepository memberRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenizer = jwtTokenizer;
+        this.memberRepository = memberRepository;
     }
 
     @Override
@@ -43,6 +48,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
 
+        request.setAttribute("fcmtoken", loginDto.getFcmtoken());
+
         return authenticationManager.authenticate(authenticationToken);
     }
 
@@ -51,10 +58,26 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                              HttpServletResponse response,
                                              FilterChain chain,
                                              Authentication authResult) {
-        Member member = (Member) authResult.getPrincipal();
+        // UserDetails로 캐스팅
+        UserDetails userDetails = (UserDetails) authResult.getPrincipal();
+
+        // UserDetails에서 이메일 가져오기
+        String email = userDetails.getUsername();
+
+        // 이메일을 사용해 Member 객체를 찾기
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Member not found with email: " + email));
+
+        // FCM 토큰 저장 로직
+        String fcmtoken = (String) request.getAttribute("fcmtoken");
+
+        if (fcmtoken != null && !fcmtoken.isEmpty()) {
+            member.setFcmToken(fcmtoken);  // FCM 토큰 저장
+            memberRepository.save(member);  // FCM 토큰 업데이트
+        }
 
         String accessToken = delegateAccessToken(member);
-        String refreshToken = delegateRefreshToken(member);
+        String refreshToken = delegateRefreshToken(member, accessToken);
         response.addCookie(createCookie(member.getEmail(), refreshToken));
         response.setHeader("Authorization", "Bearer " + accessToken);
         response.setHeader("Refresh", refreshToken);
@@ -78,13 +101,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         return acceessKey;
     }
 
-    private String delegateRefreshToken(Member member){
+    private String delegateRefreshToken(Member member , String accessToken){
         String subject = member.getEmail();
         Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
         String base64encodedSecretKey = jwtTokenizer.encodedBase64SecretKey(jwtTokenizer.getSecretKey());
 
         String refreshKey = jwtTokenizer.generateRefreshToken(
-                subject, expiration, base64encodedSecretKey);
+                subject, expiration, base64encodedSecretKey, accessToken);
 
         return refreshKey;
     }
@@ -105,7 +128,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     public Cookie createCookie(String userName, String refreshToken) {
         String cookieName = "refreshtoken";
-        String cookieValue = refreshToken; //
+        String cookieValue = refreshToken;
         Cookie cookie = new Cookie(cookieName, cookieValue);
         // 쿠키 속성 설정
         cookie.setHttpOnly(true);  //httponly 옵션 설정

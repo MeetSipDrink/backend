@@ -16,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.parameters.P;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -48,21 +49,20 @@ public class MemberController {
     }
 
 
-    @PatchMapping("/{member-id}")
+    @PatchMapping
     public ResponseEntity PatchMember(@Valid @RequestBody MemberDto.Patch requestBody,
-                                      @PathVariable("member-id") @Positive long memberId) {
+                                      @AuthenticationPrincipal Object principal) {
         Member member = memberMapper.memberPatchToMember(requestBody);
-        member.setMemberId(memberId);
+        member.setEmail(principal.toString());
         Member updateMember = service.updateMember(member);
         return new ResponseEntity<>(
                 new SingleResponseDto<>(memberMapper.memberToResponseDto(updateMember)), HttpStatus.OK);
 
     }
 
-    @GetMapping("/{member-id}")
-    public ResponseEntity getMember(
-            @PathVariable("member-id") @Positive long memberId) {
-        Member member = service.findMember(memberId);
+    @GetMapping
+    public ResponseEntity getMember(@AuthenticationPrincipal Object principal) {
+        Member member = service.findMemberByEmail(principal.toString());
         return new ResponseEntity<>(
                 new SingleResponseDto<>(memberMapper.memberToResponseDto(member))
                 , HttpStatus.OK);

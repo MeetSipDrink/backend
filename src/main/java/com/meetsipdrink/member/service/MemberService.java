@@ -35,11 +35,10 @@ public class MemberService {
 
         Member verifiedMember = memberRepository.save(member);
         return verifiedMember;
-
     }
 
     public Member updateMember(Member member) {
-        Member findMember = isvalidMember(member.getMemberId());
+        Member findMember = findMemberByEmail(member.getEmail());
 
         if (member.getNickname() != null) {
             if (!findMember.getNickname().equals(member.getNickname())) {
@@ -82,6 +81,12 @@ public class MemberService {
         if (member.isPresent()) {
             throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
         }
+    }
+
+    public Member findMemberByEmail(String email) {
+        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+        return optionalMember.orElseThrow(()
+                -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
     }
 
     public Member findVerifiedMember(long memberId) {
