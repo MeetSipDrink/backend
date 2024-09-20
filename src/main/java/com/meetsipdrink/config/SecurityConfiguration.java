@@ -55,6 +55,12 @@ public class SecurityConfiguration {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
+                        .antMatchers(HttpMethod.POST, "/*/members").permitAll()
+                        .antMatchers(HttpMethod.PATCH, "/*/members/**").hasRole("USER")
+                        .antMatchers(HttpMethod.GET, "/*/members").hasRole("ADMIN")
+                        .antMatchers(HttpMethod.GET, "/*/members/**").hasAnyRole("ADMIN", "USER")
+                        .antMatchers(HttpMethod.DELETE, "/*/members/**").hasRole("USER")
+
                         .antMatchers("/chat/**").permitAll()
                         .anyRequest().permitAll());
 

@@ -5,6 +5,7 @@ import com.meetsipdrink.board.mapper.PostLikeMapper;
 import com.meetsipdrink.board.service.PostLikeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,15 +26,15 @@ public class PostLikeController {
 
     @PostMapping
     public ResponseEntity PostLike(@PathVariable("post-id") @Positive long postId,
-                                   @RequestParam("memberId") @Positive long memberId) {
-        postLikeService.checkLike(memberId, postId);
+                                   @AuthenticationPrincipal Object principal) {
+        postLikeService.checkLike(principal.toString(), postId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping
     public ResponseEntity getPostLike(@PathVariable("post-id") @Positive long postId,
-                                      @RequestParam("memberId") @Positive long memberId) {
-        boolean isLike = postLikeService.findLike(memberId, postId);
+                                      @AuthenticationPrincipal Object principal) {
+        boolean isLike = postLikeService.findLike(principal.toString(), postId);
 
         return new ResponseEntity<>(
                 new PostLikeDto.Response(isLike),

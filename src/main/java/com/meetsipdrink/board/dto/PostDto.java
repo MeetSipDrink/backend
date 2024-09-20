@@ -17,8 +17,8 @@ public class PostDto {
     @Getter
     @AllArgsConstructor
     public static class Post {
-        @NotNull
-        private long memberId;
+        @Setter
+        private String email;
 
         @NotBlank
         private String title;
@@ -37,8 +37,8 @@ public class PostDto {
     @Getter
     @AllArgsConstructor
     public static class Patch {
-        @NotNull
-        private long memberId;
+        @Setter
+        private String email;
 
         @NotBlank
         private String title;

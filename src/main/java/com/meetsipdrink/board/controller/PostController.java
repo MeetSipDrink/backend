@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -35,7 +36,9 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity postPost(@Valid @RequestBody PostDto.Post requestBody) throws IllegalArgumentException {
+    public ResponseEntity postPost(@Valid @RequestBody PostDto.Post requestBody,
+                                   @AuthenticationPrincipal Object principal) throws IllegalArgumentException {
+        requestBody.setEmail(principal.toString());
         Post post = mapper.postPostDtoToPost(requestBody);
         Post createPost = postService.createPost(post);
         URI location = UriCreator.createUri(POST_DEFAULT_URL, createPost.getPostId());
@@ -44,7 +47,9 @@ public class PostController {
 
     @PatchMapping("/{post-id}")
     public ResponseEntity patchPost(@PathVariable("post-id") @Positive long postId,
-                                    @Valid @RequestBody PostDto.Patch requestBody) {
+                                    @Valid @RequestBody PostDto.Patch requestBody,
+                                    @AuthenticationPrincipal Object principal) {
+        requestBody.setEmail(principal.toString());
         Post post = postService.updatePost(postId, mapper.postPatchDtoToPost(requestBody));
 
         return new ResponseEntity<>(
@@ -122,8 +127,8 @@ public class PostController {
 
     @DeleteMapping("/{post-id}")
     public ResponseEntity deletePost(@PathVariable("post-id") @Positive long postId,
-                                     @RequestParam("memberId") @Positive long memberId) {
-        postService.deletePost(memberId, postId);
+                                     @AuthenticationPrincipal Object principal) {
+        postService.deletePost(principal.toString(), postId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
