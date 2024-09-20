@@ -32,11 +32,13 @@ public class SecurityConfiguration {
     private final CustomAuthorityUtils authorityUtils;
     // 검증 객체에 전달하기 위해 RedisTemplate DI
     private final RedisTemplate<String, Object> redisTemplate;
+    private final MemberRepository memberRepository;
 
-    public SecurityConfiguration(JwtTokenizer jwtTokenizer, CustomAuthorityUtils authorityUtils, RedisTemplate<String, Object> redisTemplate) {
+    public SecurityConfiguration(JwtTokenizer jwtTokenizer, CustomAuthorityUtils authorityUtils, RedisTemplate<String, Object> redisTemplate, MemberRepository memberRepository) {
         this.jwtTokenizer = jwtTokenizer;
         this.authorityUtils = authorityUtils;
         this.redisTemplate = redisTemplate;
+        this.memberRepository = memberRepository;
     }
 
     @Bean
@@ -62,6 +64,7 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.GET, "/*/members").hasRole("ADMIN")
                         .antMatchers(HttpMethod.GET, "/*/members/**").hasAnyRole("ADMIN", "USER")
                         .antMatchers(HttpMethod.DELETE, "/*/members/**").hasRole("USER")
+                        .antMatchers(HttpMethod.POST, "/*/notices").hasRole("ADMIN")
                         .antMatchers("/chat/**").permitAll()
                         .anyRequest().permitAll());
 

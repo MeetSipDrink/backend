@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -33,9 +34,9 @@ public class NoticeController {
 
     @PostMapping
     public ResponseEntity postNotice(@Valid @RequestBody NoticeDto.Post requestBody,
-                                     @RequestParam("memberId") @Positive long memberId) throws IllegalArgumentException {
+                                     @AuthenticationPrincipal Object principal) {
         Notice notice = mapper.noticePostDtoToNotice(requestBody);
-        Notice createNotice = noticeService.createNotice(notice, memberId);
+        Notice createNotice = noticeService.createNotice(notice, principal.toString());
         URI location = UriCreator.createUri(NOTICE_DEFAULT_URL, createNotice.getNoticeId());
         return ResponseEntity.created(location).build();
     }
@@ -43,8 +44,8 @@ public class NoticeController {
     @PatchMapping("/{notice-id}")
     public ResponseEntity patchNotice(@PathVariable("notice-id") @Positive long noticeId,
                                       @Valid @RequestBody NoticeDto.Patch requestBody,
-                                      @RequestParam("memberId") @Positive long memberId) {
-        Notice notice = noticeService.updateNotice(noticeId, mapper.noticePatchDtoToNotice(requestBody), memberId);
+                                      @AuthenticationPrincipal Object principal) {
+        Notice notice = noticeService.updateNotice(noticeId, mapper.noticePatchDtoToNotice(requestBody), principal.toString());
         return new ResponseEntity<>(
                 new SingleResponseDto<>(mapper.noticeToNoticeResponseDto(notice)), HttpStatus.OK);
     }
@@ -72,8 +73,8 @@ public class NoticeController {
 
     @DeleteMapping("/{notice-id}")
     public ResponseEntity deleteNotice(@PathVariable("notice-id") @Positive long noticeId,
-                                       @RequestParam("memberId") @Positive long memberId) {
-        noticeService.deleteNotice(noticeId, memberId);
+                                       @AuthenticationPrincipal Object principal) {
+        noticeService.deleteNotice(noticeId, principal.toString());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
