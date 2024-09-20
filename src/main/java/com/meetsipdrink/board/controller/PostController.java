@@ -37,7 +37,7 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity postPost(@Valid @RequestBody PostDto.Post requestBody,
-                                   @AuthenticationPrincipal Object principal) throws IllegalArgumentException {
+                                   @AuthenticationPrincipal Object principal) {
         requestBody.setEmail(principal.toString());
         Post post = mapper.postPostDtoToPost(requestBody);
         Post createPost = postService.createPost(post);

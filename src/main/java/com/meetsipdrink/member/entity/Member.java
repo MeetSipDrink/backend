@@ -87,13 +87,13 @@ public class Member extends Auditable {
     @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Friend> receivedFriendRequests = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.ALL})
     private List<Post> posts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.ALL})
     private List<PostLike> postLikes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.ALL})
     private List<PostComment> postComments = new ArrayList<>();
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE)
