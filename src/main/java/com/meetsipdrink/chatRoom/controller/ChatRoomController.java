@@ -1,5 +1,6 @@
 package com.meetsipdrink.chatRoom.controller;
 
+import com.meetsipdrink.chatRoom.dto.ChatRoomDto;
 import com.meetsipdrink.chatRoom.entity.ChatRoom;
 import com.meetsipdrink.chatRoom.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
@@ -12,13 +13,21 @@ import java.util.List;
 @RestController
 @RequestMapping("/chatrooms")
 public class ChatRoomController {
-    private ChatRoomService service;
+    private  final ChatRoomService service;
+
+//    @PostMapping
+//    public ResponseEntity<ChatRoom> createChatRoom(@RequestParam String roomName, @RequestParam Long memberId) {
+//        ChatRoom chatRoom = service.createChatRoom(roomName, memberId);
+//        return ResponseEntity.ok(chatRoom);
+//    }
+
 
     @PostMapping
-    public ResponseEntity<ChatRoom> createChatRoom(@RequestParam String roomName, @RequestParam Long memberId) {
-        ChatRoom chatRoom = service.createChatRoom(roomName, memberId);
+    public ResponseEntity<ChatRoom> createChatRoom(@RequestBody ChatRoomDto.Request request) {
+        ChatRoom chatRoom = service.createChatRoom(request.getRoomName(), request.getMemberId());
         return ResponseEntity.ok(chatRoom);
     }
+
 
         @GetMapping("/{chatRoomId}")
         public ResponseEntity<ChatRoom> getChatRoomById(@PathVariable Long chatRoomId) {
@@ -26,7 +35,7 @@ public class ChatRoomController {
             return ResponseEntity.ok(chatRoom);
         }
 
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<List<ChatRoom>> getAllChatRooms() {
         List<ChatRoom> chatRooms = service.findAllChatRooms();
         return ResponseEntity.ok(chatRooms);

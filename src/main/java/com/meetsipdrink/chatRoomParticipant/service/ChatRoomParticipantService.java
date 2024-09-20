@@ -26,21 +26,25 @@ public class ChatRoomParticipantService {
     //입장 시 참여자 추가
     @Transactional
     public void addParticipant(Long chatRoomId, Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(()-> new IllegalArgumentException("Invalid member ID"));
-        ChatRoom chatRoom =chatRoomRepository.findById(chatRoomId).orElseThrow(()-> new IllegalArgumentException("Invalid chat room ID"));
-        ChatRoomParticipant participant = new ChatRoomParticipant(chatRoom,member );
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid member ID"));
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid chat room ID"));
+        ChatRoomParticipant participant = new ChatRoomParticipant(chatRoom, member);
         participantRepository.save(participant);
     }
 
     //참여자 제거
     @Transactional
     public void removeParticipant(Long chatRoomId, Long memberId) {
-        // 채팅방 ID와 멤버 ID로 참가자 조회
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("Invalid member ID"));
-        ChatRoomParticipant participant = participantRepository.findByChatRoom_ChatRoomIdAndParticipant(chatRoomId, member)
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid member ID"));
+        ChatRoomParticipant participant = participantRepository
+                .findByChatRoom_ChatRoomIdAndParticipant(chatRoomId, member)
                 .orElseThrow(() -> new IllegalArgumentException("Participant not found"));
         participantRepository.delete(participant);
     }
+
 
 
 
