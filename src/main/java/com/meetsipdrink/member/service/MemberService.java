@@ -113,4 +113,10 @@ public class MemberService {
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
     }
 
+    public Member findMemberByNickName(String nickName) {
+        Optional<Member> optionalMember = memberRepository.findByNickname(nickName);
+        return optionalMember.orElseThrow(()
+                -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+    }
+
 }
