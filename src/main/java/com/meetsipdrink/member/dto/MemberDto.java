@@ -2,6 +2,7 @@ package com.meetsipdrink.member.dto;
 
 
 import com.meetsipdrink.member.entity.Member;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -68,10 +69,8 @@ public class MemberDto {
                 message = "특수문자 제외 2자이상 8자 이하로 입력해주세요.")
         private String  nickname;
 
-        @NotBlank
         private String profileImage;
 
-        @NotBlank(message = "술 타입인 들어갈 수 있습니다")
         private String alcoholType1;
 
         private String alcoholType2;
@@ -113,5 +112,16 @@ public class MemberDto {
         private String fcmToken;
 
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public class ChatRoomDto {
+        private Long memberId;
+        private String nickname;
+        private String email;
+    }
+
 
 }

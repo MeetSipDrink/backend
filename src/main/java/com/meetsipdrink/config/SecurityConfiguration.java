@@ -9,6 +9,7 @@ import com.meetsipdrink.auth.utils.CustomAuthorityUtils;
 import com.meetsipdrink.member.repository.MemberRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
@@ -29,11 +30,14 @@ import java.util.Collections;
 public class SecurityConfiguration {
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils authorityUtils;
+    // 검증 객체에 전달하기 위해 RedisTemplate DI
+    private final RedisTemplate<String, Object> redisTemplate;
     private final MemberRepository memberRepository;
 
-    public SecurityConfiguration(JwtTokenizer jwtTokenizer, CustomAuthorityUtils authorityUtils, MemberRepository memberRepository) {
+    public SecurityConfiguration(JwtTokenizer jwtTokenizer, CustomAuthorityUtils authorityUtils, RedisTemplate<String, Object> redisTemplate, MemberRepository memberRepository) {
         this.jwtTokenizer = jwtTokenizer;
         this.authorityUtils = authorityUtils;
+        this.redisTemplate = redisTemplate;
         this.memberRepository = memberRepository;
     }
 
@@ -55,6 +59,12 @@ public class SecurityConfiguration {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
+                        .antMatchers(HttpMethod.POST, "/*/members").permitAll()
+                        .antMatchers(HttpMethod.PATCH, "/*/members/**").hasRole("USER")
+                        .antMatchers(HttpMethod.GET, "/*/members").hasRole("ADMIN")
+                        .antMatchers(HttpMethod.GET, "/*/members/**").hasAnyRole("ADMIN", "USER")
+                        .antMatchers(HttpMethod.DELETE, "/*/members/**").hasRole("USER")
+                        .antMatchers(HttpMethod.POST, "/*/notices").hasRole("ADMIN")
                         .antMatchers("/chat/**").permitAll()
                         .anyRequest().permitAll());
 
@@ -90,7 +100,7 @@ public class SecurityConfiguration {
             jwtAuthenticationFilter.setFilterProcessesUrl("/members/login");
 
             JwtVerificationFilter jwtVerificationFilter =
-                    new JwtVerificationFilter(jwtTokenizer, authorityUtils);
+                    new JwtVerificationFilter(jwtTokenizer, authorityUtils,redisTemplate);
 
             builder.addFilter(jwtAuthenticationFilter)
                     .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);

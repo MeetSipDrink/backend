@@ -13,8 +13,8 @@ public class PostCommentDto {
     @Getter
     @AllArgsConstructor
     public static class Post {
-        @NotNull
-        private long memberId;
+        @Setter
+        private String email;
 
         @NotBlank
         private String content;
@@ -26,8 +26,7 @@ public class PostCommentDto {
     @Setter
     @AllArgsConstructor
     public static class Patch {
-        @NotNull
-        private long memberId;
+        private String email;
 
         @NotBlank
         private String content;

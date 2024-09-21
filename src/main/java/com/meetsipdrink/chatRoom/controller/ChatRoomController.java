@@ -21,19 +21,24 @@ public class ChatRoomController {
 //        return ResponseEntity.ok(chatRoom);
 //    }
 
-
     @PostMapping
     public ResponseEntity<ChatRoom> createChatRoom(@RequestBody ChatRoomDto.Request request) {
         ChatRoom chatRoom = service.createChatRoom(request.getRoomName(), request.getMemberId());
         return ResponseEntity.ok(chatRoom);
     }
 
+    @GetMapping("/{chatRoomId}")
+    public ResponseEntity<ChatRoomDto.ChatRoomResponse> getChatRoomById(@PathVariable Long chatRoomId) {
+        ChatRoom chatRoom = service.findChatRoomById(chatRoomId);
 
-        @GetMapping("/{chatRoomId}")
-        public ResponseEntity<ChatRoom> getChatRoomById(@PathVariable Long chatRoomId) {
-            ChatRoom chatRoom = service.findChatRoomById(chatRoomId);
-            return ResponseEntity.ok(chatRoom);
-        }
+        // ChatRoomResponse DTO로 변환
+        ChatRoomDto.ChatRoomResponse response = new ChatRoomDto.ChatRoomResponse();
+        response.setChatRoomId(chatRoom.getChatRoomId());
+        response.setMemberId(chatRoom.getHost().getMemberId());
+        response.setChatRoomName(chatRoom.getChatRoomName());
+        response.setParticipant(chatRoom.getParticipant());
+        return ResponseEntity.ok(response);
+    }
 
     @GetMapping("/list")
     public ResponseEntity<List<ChatRoom>> getAllChatRooms() {
@@ -41,25 +46,21 @@ public class ChatRoomController {
         return ResponseEntity.ok(chatRooms);
     }
 
-    @PostMapping("/{chatRoomId}/participant")
-    public ResponseEntity<String> addParticipant(@PathVariable Long chatRoomId, @RequestParam Long memberId) {
-        service.addParticipantToChatRoom(chatRoomId, memberId);
-        return ResponseEntity.ok("Participant added.");
-    }
-
-    // 채팅방에서 참여자 제거
-    @DeleteMapping("/{chatRoomId}/participant")
-    public ResponseEntity<String> removeParticipant(@PathVariable Long chatRoomId, @RequestParam Long memberId) {
-        service.removeParticipantFromChatRoom(chatRoomId, memberId);
-        return ResponseEntity.ok("Participant removed.");
-    }
+//    @PostMapping("/{chatRoomId}/participant")
+//    public ResponseEntity<String> addParticipant(@PathVariable Long chatRoomId, @RequestParam Long memberId) {
+//        service.addParticipantToChatRoom(chatRoomId, memberId);
+//        return ResponseEntity.ok("Participant added.");
+//    }
+//
+//    // 채팅방에서 참여자 제거
+//    @DeleteMapping("/{chatRoomId}/participant")
+//    public ResponseEntity<String> removeParticipant(@PathVariable Long chatRoomId, @RequestParam Long memberId) {
+//        service.removeParticipantFromChatRoom(chatRoomId, memberId);
+//        return ResponseEntity.ok("Participant removed.");
+//    }
 
     //get 으로  프론트에서 받은 결과로 백에서 찾아주면 된다 .
     //채팅방 이름이랑 해시테그 post 요청오면
     // 방 list 를 보내주기 room 이름에 이 글자가 있고 이 해시테그가 있는
     // 이 두개가 부합되는 걸 보내줘야한다 ...
-
     }
-
-
-

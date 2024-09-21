@@ -1,5 +1,7 @@
 package com.meetsipdrink.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.meetsipdrink.audit.Auditable;
 import com.meetsipdrink.ban.entity.Ban;
@@ -23,6 +25,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Member extends Auditable {
 
     @Id
@@ -87,13 +90,13 @@ public class Member extends Auditable {
     @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Friend> receivedFriendRequests = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.ALL})
     private List<Post> posts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.ALL})
     private List<PostLike> postLikes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.ALL})
     private List<PostComment> postComments = new ArrayList<>();
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE)
@@ -105,21 +108,24 @@ public class Member extends Auditable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_room_id")
-    @JsonManagedReference
+    @JsonBackReference  // 역참조: Member에서 ChatRoom을 직렬화하지 않음
     private ChatRoom chatRoom;
+
+
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "member_chat_room_status", nullable = false)
+//    private memberChatRoomStatus chatRoomStatus = memberChatRoomStatus.AVAILABLE;
+
+    // ChatRoom을 설정할 때 양방향 관계를 관리하는 메서드
     public void setChatRoom(ChatRoom chatRoom) {
-        if (this.chatRoom != null) {
-            this.chatRoom.removeMember(this);  // 기존 채팅방에서 제거
-        }
-        this.chatRoom = chatRoom;
-        if (chatRoom != null && !chatRoom.getParticipant().contains(this)) {
-            chatRoom.addMember(this);  // 새 채팅방에 추가
-        }
-    }
-    public void removeChatRoom(ChatRoom chatRoom) {
-        if (this.chatRoom != null && this.chatRoom.equals(chatRoom)) {
-            this.chatRoom = null;  // 해당 채팅방과의 관계를 끊음
-            chatRoom.removeMember(this);  // 채팅방에서도 이 멤버를 제거
+        if (this.chatRoom != chatRoom) {
+            if (this.chatRoom != null) {
+                this.chatRoom.removeMember(this);
+            }
+            this.chatRoom = chatRoom;
+            if (chatRoom != null && !chatRoom.getParticipant().contains(this)) {
+                chatRoom.addMember(this);
+            }
         }
     }
 
@@ -198,15 +204,16 @@ public class Member extends Auditable {
         }
     }
 
-//    public enum memberChatRoomStatus{
+//    public enum memberChatRoomStatus {
 //        AVAILABLE("채팅방 입장 전"),
 //        IN_CHATROOM("채팅방 입장 후");
-//        @Getter
-//        private final String ChatStatus;
-//        memberChatRoomStatus( String chatStatus) {
-//            this.ChatStatus = chatStatus;
-//            }
 //
+//        @Getter
+//        private final String chatStatus;
+//
+//        memberChatRoomStatus(String chatStatus) {
+//            this.chatStatus = chatStatus;
+//        }
 //    }
 
 }

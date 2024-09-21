@@ -12,10 +12,7 @@ import com.meetsipdrink.notification.service.FCMService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 
 @Transactional
@@ -73,10 +70,10 @@ public class PostCommentService {
         return postCommentRepository.save(postComment);
     }
 
-    public PostComment updatePostComment(long postCommentId, PostComment postComment, long memberId) {
+    public PostComment updatePostComment(long postCommentId, PostComment postComment, String email) {
         PostComment findPostComment = findVerifiedPostComment(postCommentId);
 
-        if (findPostComment.getMember().getMemberId() != memberId) {
+        if (!Objects.equals(findPostComment.getMember().getEmail(), email)) {
             throw new BusinessLogicException(ExceptionCode.BOARD_UNAUTHORIZED_ACTION);
         }
 
@@ -91,10 +88,10 @@ public class PostCommentService {
         return postCommentRepository.findByPost(post); // PostCommentRepository에 해당하는 메서드 추가 필요
     }
 
-    public void deletePostComment(long postCommentId, long memberId) {
+    public void deletePostComment(long postCommentId, String email) {
         PostComment findPostComment = findVerifiedPostComment(postCommentId);
 
-        if (findPostComment.getMember().getMemberId() != memberId) {
+        if (!Objects.equals(findPostComment.getMember().getEmail(), email)) {
             throw new BusinessLogicException(ExceptionCode.BOARD_UNAUTHORIZED_ACTION);
         }
 

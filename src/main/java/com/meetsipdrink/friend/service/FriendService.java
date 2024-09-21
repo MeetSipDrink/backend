@@ -1,6 +1,7 @@
 package com.meetsipdrink.friend.service;
 
 import com.fasterxml.jackson.datatype.jsr310.deser.InstantDeserializer;
+import com.meetsipdrink.ban.repository.BanRepository;
 import com.meetsipdrink.exception.BusinessLogicException;
 import com.meetsipdrink.exception.ExceptionCode;
 import com.meetsipdrink.friend.entitiy.Friend;
@@ -21,16 +22,21 @@ import java.util.List;
 public class FriendService {
     private final FriendRepository friendRepository;
     private final MemberRepository memberRepository;
+    private final BanRepository banRepository;
 
     public void addFriend(long requesterId, long recipientId) {
         Member requester = memberRepository.findById(requesterId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
         Member recipient = memberRepository.findById(recipientId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-
         Friend existingRequest = friendRepository.findByRequesterAndRecipient(requester, recipient);
         if (existingRequest != null) {
             throw new BusinessLogicException(ExceptionCode.FRIEND_REQUEST_ALREADY_EXISTS);
+        }
+
+        boolean isBanned = banRepository.existsByBlockerMemberAndBlockedMember(recipient, requester);
+        if (isBanned) {
+            throw new BusinessLogicException(ExceptionCode.BANNED_MEMBER_CANNOT_SEND_REQUEST);
         }
 
         Friend reverseRequest = friendRepository.findByRequesterAndRecipient(recipient, requester);
