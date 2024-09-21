@@ -40,7 +40,7 @@ public class FriendController {
     public ResponseEntity deleteFriendRequest(@RequestBody FriendDto.RequestDto requestDto,
                                               @AuthenticationPrincipal Object principal) {
         requestDto.setEmail(principal.toString());
-        friendService.rejectFriendRequest(requestDto.getEmail(), requestDto.getRecipientId());
+        friendService.rejectFriendRequest(requestDto.getRecipientId(), requestDto.getEmail());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -50,15 +50,6 @@ public class FriendController {
         friendService.acceptFriendRequest(principal.toString(), requestDto.getRecipientId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
-//    @GetMapping("/{member-id}/{status}")
-//    public ResponseEntity getFriends(@PathVariable("member-id") long memberId,
-//                                     @PathVariable("status") String status) {
-//        Friend.Status enumFriendStatus = friendService.convertToFriendStatus(status);
-//        List<Member> friends = friendService.getFriends(memberId, enumFriendStatus);
-//        List<FriendDto.ResponseDto> responseList = friendMapper.friendsToResponse(friends);
-//        return new ResponseEntity<>(new SingleResponseDto<>(responseList), HttpStatus.OK);
-//    }
-
 
     @GetMapping("/{status}")
     public ResponseEntity getFriends(@AuthenticationPrincipal Object principal,
@@ -69,11 +60,7 @@ public class FriendController {
         return new ResponseEntity<>(new SingleResponseDto<>(responseList), HttpStatus.OK);
     }
 
-
-
-
-
-    @GetMapping("/friend/{friend-id}")
+    @GetMapping("/{friend-id}")
     public ResponseEntity getFriend(@AuthenticationPrincipal Object principal,
                                     @PathVariable("friend-id") long friendId) {
         Friend friend = friendService.getFriend(principal.toString(), friendId);

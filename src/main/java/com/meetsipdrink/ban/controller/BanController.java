@@ -33,7 +33,9 @@ public class BanController {
     private final MemberService memberService;
 
     @PostMapping
-    public ResponseEntity<BanDto.Response> addBan(@RequestBody BanDto.Post post) {
+    public ResponseEntity<BanDto.Response> addBan(@RequestBody BanDto.Post post,
+                                                  @AuthenticationPrincipal Object principal) {
+        post.setEmail(principal.toString());
         try {
             boolean isFriend = friendService.isFriend(post.getEmail(), post.getBlockedMemberId());
             BanDto.Response response = banService.addBan(post.getEmail(), post.getBlockedMemberId());

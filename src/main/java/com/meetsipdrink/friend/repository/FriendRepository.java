@@ -19,16 +19,8 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
     List<Friend> findByRequester_MemberIdOrRecipient_MemberIdAndFriendStatus(
             Long requesterId, Long recipientId, Friend.Status status);
     Optional<Friend> findByRequester_MemberIdAndRecipient_MemberId(Long requesterId ,  Long recipientId);
-
-    Optional<Friend> findByRequester_MemberIdAndRecipient_MemberIdAndFriendStatusIn(Long requesterId, Long recipientId, List<Friend.Status> statuses);
-
     // 추가한 코드
     Optional<Friend> findByRequester_EmailAndRecipient_MemberIdAndFriendStatusIn(String email, Long recipientId, List<Friend.Status> statuses);
 
     Optional<Friend> findByRequester_MemberIdAndRecipient_EmailAndFriendStatusIn(Long recipientId, String email, List<Friend.Status> statuses);
-
-    List<Friend> findByRequester_EmailOrRecipient_MemberIdAndFriendStatus(String email, Long recipientId, Friend.Status status);
-
-    Optional<Friend> findByRequester_MemberIdAndRecipient_email(String email, Long recipientId);
-
 }

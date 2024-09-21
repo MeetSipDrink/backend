@@ -8,6 +8,7 @@ import com.meetsipdrink.friend.entitiy.Friend;
 import com.meetsipdrink.friend.repository.FriendRepository;
 import com.meetsipdrink.member.entity.Member;
 import com.meetsipdrink.member.repository.MemberRepository;
+import com.meetsipdrink.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,7 @@ public class FriendService {
     private final FriendRepository friendRepository;
     private final MemberRepository memberRepository;
     private final BanRepository banRepository;
+    private final MemberService memberService;
 
     public Long addFriend(String email, long recipientId) {
         Member requester = memberRepository.findByEmail(email)
@@ -64,8 +66,7 @@ public class FriendService {
     public void acceptFriendRequest(String email, long recipientId) {
         Member recipient = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-
-        Friend friendRequest = friendRepository.findByRequester_MemberIdAndRecipient_email(email, recipientId)
+        Friend friendRequest = friendRepository.findByRequester_MemberIdAndRecipient_MemberId(recipientId, recipient.getMemberId())
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.FRIEND_REQUEST_NOT_FOUND));
 
         if (!friendRequest.getRecipient().equals(recipient)) {
@@ -83,12 +84,11 @@ public class FriendService {
     }
 
 
-    public void rejectFriendRequest(String email, long recipientId) {
-        Member requester = memberRepository.findByEmail(email)
+    public void rejectFriendRequest(long recipientId, String email) {
+        Member requester = memberRepository.findById(recipientId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-        Member recipient = memberRepository.findById(recipientId)
+        Member recipient = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-
         Friend friendRequest = friendRepository.findByRequesterAndRecipient(requester, recipient);
         if (friendRequest == null) {
             throw new BusinessLogicException(ExceptionCode.FRIEND_REQUEST_NOT_FOUND);
@@ -96,24 +96,10 @@ public class FriendService {
         friendRepository.delete(friendRequest);
     }
 
-//    public void removeFriend(long requesterId, long recipientId) {
-//        Member requester = memberRepository.findById(requesterId)
-//                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-//        Member recipient = memberRepository.findById(recipientId)
-//                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-//        Friend friendRequest = friendRepository.findByRequesterAndRecipient(requester, recipient);
-//        if (friendRequest != null) {
-//            friendRepository.delete(friendRequest);
-//        }
-//        Friend reverseFriendRequest = friendRepository.findByRequesterAndRecipient(recipient, requester);
-//        if (reverseFriendRequest != null) {
-//            friendRepository.delete(reverseFriendRequest);
-//        }
-//    }
-
     public void removeFriend(String email, long friendId) {
+        Member requester = memberService.findMemberByEmail(email);
         // 1. 친구 관계 조회
-        List<Friend> friendRelations = friendRepository.findByRequester_EmailOrRecipient_MemberIdAndFriendStatus(email, friendId, Friend.Status.ACCEPTED);
+        List<Friend> friendRelations = friendRepository.findByRequester_MemberIdOrRecipient_MemberIdAndFriendStatus(requester.getMemberId(), friendId, Friend.Status.ACCEPTED);
 
         // 2. 양방향으로 존재하는 친구 관계 삭제
         for (Friend friend : friendRelations) {
@@ -122,18 +108,14 @@ public class FriendService {
             }
         }
 
-        Member requester = new Member();
-        requester.setMemberId(friendId);
         Member recipient = new Member();
-        recipient.setEmail(email);
+        recipient.setMemberId(friendId);
 
         Friend reverseFriend = friendRepository.findByRequesterAndRecipient(requester, recipient);
         if (reverseFriend != null) {
             friendRepository.delete(reverseFriend);
         }
     }
-
-
 
     @Transactional(readOnly = true)
     public List<Member> getFriends(String email, Friend.Status status) {
@@ -147,7 +129,6 @@ public class FriendService {
         }
         return friendMembers;
     }
-
 
     //특정 회원이랑 비교 근데 없어도 될 듯
     @Transactional(readOnly = true)
@@ -164,7 +145,6 @@ public class FriendService {
         return friendRequest;
     }
 
-
     public boolean isFriend(String email, long friendId) {
         List<Friend.Status> statuses = Arrays.asList(Friend.Status.ACCEPTED, Friend.Status.PENDING);
         return friendRepository.findByRequester_EmailAndRecipient_MemberIdAndFriendStatusIn(email, friendId, statuses).isPresent() ||
@@ -178,8 +158,6 @@ public class FriendService {
             throw new BusinessLogicException(ExceptionCode.INVALID_FRIEND_STATUS);
         }
     }
-
-
-    }
+}
 
 
