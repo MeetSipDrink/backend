@@ -25,7 +25,7 @@ public class FriendDto {
     @Setter
     @NoArgsConstructor
     public static class RequestDto {
-        private long requesterId;
+        private String email;
         private long recipientId;
     }
 
@@ -41,9 +41,8 @@ public class FriendDto {
     @Setter
     @NoArgsConstructor
 public static class AcceptFriendDto {
-    private long requesterId;
+    private String email;
     private long recipientId;
-
     }
 
 

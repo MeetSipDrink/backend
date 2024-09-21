@@ -22,11 +22,9 @@ public class Post extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long postId;
 
-    @NotNull
     @Column(name = "post_title", nullable = false)
     private String title;
 
-    @NotNull
     @Column(name = "post_content", nullable = false)
     private String content;
 

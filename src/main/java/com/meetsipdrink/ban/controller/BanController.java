@@ -9,6 +9,7 @@ import com.meetsipdrink.utils.UriCreator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import com.meetsipdrink.ban.dto.BanDto;
@@ -32,15 +33,17 @@ public class BanController {
     private final MemberService memberService;
 
     @PostMapping
-    public ResponseEntity<BanDto.Response> addBan(@RequestBody BanDto.Post post) {
+    public ResponseEntity<BanDto.Response> addBan(@RequestBody BanDto.Post post,
+                                                  @AuthenticationPrincipal Object principal) {
+        post.setEmail(principal.toString());
         try {
-            boolean isFriend = friendService.isFriend(post.getBlockerId(), post.getBlockedMemberId());
-            BanDto.Response response = banService.addBan(post.getBlockerId(), post.getBlockedMemberId());
+            boolean isFriend = friendService.isFriend(post.getEmail(), post.getBlockedMemberId());
+            BanDto.Response response = banService.addBan(post.getEmail(), post.getBlockedMemberId());
             if (response == null) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
             }
             if (isFriend) {
-                friendService.removeFriend(post.getBlockerId(), post.getBlockedMemberId());
+                friendService.removeFriend(post.getEmail(), post.getBlockedMemberId());
             }
             URI location = UriCreator.createUri(BAN_DEFAULT_URL, response.getBanId());
             return ResponseEntity.created(location).body(response);
@@ -50,10 +53,9 @@ public class BanController {
         }
     }
 
-
-    @GetMapping("/{blockerId}")
-    public ResponseEntity<List<BanDto.banListResponse>> getBanList(@PathVariable("blockerId") @Positive long blockerId) {
-        List<BanDto.Response> banDtoList = banService.getBanList(blockerId);
+    @GetMapping
+    public ResponseEntity<List<BanDto.banListResponse>> getBanList(@AuthenticationPrincipal Object principal) {
+        List<BanDto.Response> banDtoList = banService.getBanList(principal.toString());
         List<BanDto.banListResponse> banList = banDtoList.stream()
                 .filter(ban -> ban != null)
                 .map(ban -> {
@@ -70,25 +72,13 @@ public class BanController {
         return new ResponseEntity<>(banList, HttpStatus.OK);
     }
 
-
-//    @GetMapping("/{blockerId}")
-//    public ResponseEntity<List<BanDto.banListResponse>> getBanList (@PathVariable("blockerId") @Positive long blockerId){
-//
-//    }
-
-
-
-
-
-
-    @DeleteMapping("/{blockerId}/{blockedId}")
-    public ResponseEntity<Void> cancelBan(@PathVariable("blockerId") @Positive long blockerId,
+    @DeleteMapping("/{blockedId}")
+    public ResponseEntity<Void> cancelBan(@AuthenticationPrincipal Object principal,
                                           @PathVariable("blockedId") @Positive long blockedId) {
-        Member blockerMember = memberService.findVerifiedMember(blockerId);
+        Member blockerMember = memberService.findMemberByEmail(principal.toString());
         Member blockedMember = memberService.findVerifiedMember(blockedId);
 
         banService.cancelBan(blockerMember, blockedMember);
         return ResponseEntity.noContent().build();
     }
-
 }

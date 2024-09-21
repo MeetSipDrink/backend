@@ -26,13 +26,8 @@ public class BanService {
     private final FriendRepository friendRepository;
     private final BanMapper banMapper;
 
-
-
-
-
-
-    public BanDto.Response addBan(long blockerId, long blockedMemberId) {
-        Member blocker = memberRepository.findById(blockerId)
+    public BanDto.Response addBan(String email, long blockedMemberId) {
+        Member blocker = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.BLOCKING_MEMBER_NOT_FOUND));
         Member blockedMember = memberRepository.findById(blockedMemberId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.BANNED_MEMBER_NOT_FOUND));
@@ -83,8 +78,8 @@ public class BanService {
 //    }
 
     @Transactional(readOnly = true)
-    public List<BanDto.Response> getBanList(long blockerMember) {
-        Member blocker = memberRepository.findById(blockerMember)
+    public List<BanDto.Response> getBanList(String email) {
+        Member blocker = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
         List<Ban> banList = banRepository.findByBlockerMember_MemberId(blocker.getMemberId());
         // 매핑 전에 banList 값 확인
@@ -99,10 +94,6 @@ public class BanService {
 
     }
 
-
-
-
-
     @Transactional
     public void cancelBan(Member blockerMember, Member blockedMember) {
         Ban ban = banRepository.findByBlockerMemberAndBlockedMember(blockerMember, blockedMember)
@@ -110,10 +101,6 @@ public class BanService {
 
         banRepository.delete(ban);
     }
-
-
-
-
 }
 
 

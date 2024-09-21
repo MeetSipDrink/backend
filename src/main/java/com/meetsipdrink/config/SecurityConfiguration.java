@@ -60,12 +60,13 @@ public class SecurityConfiguration {
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
                         .antMatchers(HttpMethod.POST, "/*/members").permitAll()
-                        .antMatchers(HttpMethod.PATCH, "/*/members/**").hasRole("USER")
+                        .antMatchers(HttpMethod.PATCH, "/*/members/**").permitAll()
                         .antMatchers(HttpMethod.GET, "/*/members").hasRole("ADMIN")
                         .antMatchers(HttpMethod.GET, "/*/members/**").hasAnyRole("ADMIN", "USER")
-                        .antMatchers(HttpMethod.DELETE, "/*/members/**").hasRole("USER")
+                        .antMatchers(HttpMethod.DELETE, "/*/members/**").permitAll()
                         .antMatchers(HttpMethod.POST, "/*/notices").hasRole("ADMIN")
-                        .antMatchers("/chat/**").permitAll()
+                        .antMatchers(HttpMethod.PATCH, "/*/notices/**").hasRole("ADMIN")
+                        .antMatchers(HttpMethod.DELETE, "/*/notices/**").hasRole("ADMIN")
                         .anyRequest().permitAll());
 
         return http.build();

@@ -19,9 +19,9 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/posts/{post-id}/comment")
+@RequestMapping("/posts/{post-id}/comments")
 public class PostCommentController {
-    private final static String POST_COMMENT_DEFAULT_URL = "/posts/{post-id}/comment";
+    private final static String POST_COMMENT_DEFAULT_URL = "/posts/{post-id}/comments";
     private final PostCommentService postCommentService;
     private final PostService postService;
     private final PostCommentMapper mapper;
