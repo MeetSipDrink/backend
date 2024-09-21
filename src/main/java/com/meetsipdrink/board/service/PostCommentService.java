@@ -8,6 +8,7 @@ import com.meetsipdrink.exception.BusinessLogicException;
 import com.meetsipdrink.exception.ExceptionCode;
 import com.meetsipdrink.member.entity.Member;
 import com.meetsipdrink.member.service.MemberService;
+import com.meetsipdrink.notification.service.FCMService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,14 +22,16 @@ public class PostCommentService {
     private final MemberService memberService;
     private final PostCommentRepository postCommentRepository;
     private final PostRepository postRepository;
+    private final FCMService fcmService;
 
     public PostCommentService(PostService postService,
                               MemberService memberService,
-                              PostCommentRepository postCommentRepository, PostRepository postRepository) {
+                              PostCommentRepository postCommentRepository, PostRepository postRepository, FCMService fcmService) {
         this.postService = postService;
         this.memberService = memberService;
         this.postCommentRepository = postCommentRepository;
         this.postRepository = postRepository;
+        this.fcmService = fcmService;
     }
 
     public PostComment createPostComment(PostComment postComment) throws IllegalArgumentException {
@@ -49,9 +52,17 @@ public class PostCommentService {
             }
 
             postComment.setParentComment(parentComment);
+
+            String fcmtoken = postComment.getParentComment().getMember().getFcmToken();
+            String nickname = postComment.getMember().getNickname();
+            fcmService.sendCommentNotification(fcmtoken, nickname, postComment.getContent());
         } else {
             // 부모 댓글이 없을 경우, 최상위 댓글로 설정
             postComment.setParentComment(null);
+
+            String fcmtoken = postComment.getPost().getMember().getFcmToken();
+            String nickname = postComment.getMember().getNickname();
+            fcmService.sendCommentNotification(fcmtoken, nickname, postComment.getContent());
         }
 
         post.setCommentCount(post.getCommentCount() + 1);
@@ -112,4 +123,6 @@ public class PostCommentService {
         }
         return count;
     }
+
+
 }
