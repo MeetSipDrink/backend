@@ -1,27 +1,33 @@
 package com.meetsipdrink.chat.service;
 
-import com.meetsipdrink.chatRoom.entity.ChatRoom;
+import com.meetsipdrink.chat.dto.ChatDto;
+import com.meetsipdrink.chat.entity.Chat;
+import com.meetsipdrink.chat.mapper.ChatMapper;
+import com.meetsipdrink.chat.repository.ChatRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
 
 @Service
 public class ChatService {
-    private Map<String, ChatRoom> chatRooms = new HashMap<>();
 
-//    public ChatRoom createChatRoom(String name) {
-//        String chatRoomId = UUID.randomUUID().toString();
-//        ChatRoom chatRoom = new ChatRoom(chatRoomId, name);
-//        chatRooms.put(chatRoomId, chatRoom);
-//        return chatRoom;
-//    }
+        private final ChatRepository chatRepository;
+        private final ChatMapper chatMapper;
 
-    public ChatRoom findChatRoomById(String chatRoomId) {
-        return chatRooms.get(chatRoomId);
+    public ChatService(ChatRepository chatRepository, ChatMapper chatMapper) {
+        this.chatRepository = chatRepository;
+        this.chatMapper = chatMapper;
     }
 
-    public List<ChatRoom> findAllChatRooms() {
-        return new ArrayList<>(chatRooms.values());
+    @Transactional
+        public ChatDto.Response sendMessage(ChatDto.Post postDto) {
+            // 메시지 저장 로직
+            Chat chat = chatMapper.postDtoToChat(postDto);
+            chatRepository.save(chat);
+            return chatMapper.chatToResponseDto(chat);
+        }
     }
 
-}
+
+
