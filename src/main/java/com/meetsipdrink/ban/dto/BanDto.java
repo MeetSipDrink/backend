@@ -14,7 +14,7 @@ public class BanDto {
     @Setter
     @NoArgsConstructor
     public static class Post {
-        private long blockerId;
+        private String email;
         private long blockedMemberId;
     }
 

@@ -69,10 +69,10 @@ public class MemberService {
                 Sort.by("memberId").descending()));
     }
 
-    public void deleteMember (long memberId) {
-        Member member = findMember(memberId);
+    public void deleteMember (String email) {
+        Member member = findMemberByEmail(email);
         member.setStatus(Member.memberStatus.isInactive);
-        member.setNickname("탈퇴한회원" + memberId);
+        member.setNickname("탈퇴한회원" + member.getMemberId());
         memberRepository.save(member);
     }
 

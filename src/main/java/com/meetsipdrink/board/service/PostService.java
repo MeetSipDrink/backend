@@ -36,11 +36,11 @@ public class PostService {
     }
 
     public Post updatePost(long postId, Post post) {
-            Post findPost = findVerifiedPost(postId);
+        Post findPost = findVerifiedPost(postId);
 
-            if (findPost.getMember().getMemberId() != post.getMember().getMemberId()) {
-                throw new BusinessLogicException(ExceptionCode.BOARD_UNAUTHORIZED_ACTION);
-            }
+        if (!Objects.equals(findPost.getMember().getEmail(), post.getMember().getEmail())) {
+            throw new BusinessLogicException(ExceptionCode.BOARD_UNAUTHORIZED_ACTION);
+        }
 
         Optional.ofNullable(post.getTitle())
                 .ifPresent(title -> findPost.setTitle(title));
@@ -98,9 +98,8 @@ public class PostService {
 
     public Post findVerifiedPost(long postId) {
         Optional<Post> optionalPost = postRepository.findById(postId);
-        Post findPost = optionalPost.orElseThrow(() ->
+        return optionalPost.orElseThrow(() ->
                 new BusinessLogicException(ExceptionCode.BOARD_NOT_FOUND));
-        return findPost;
     }
 
     public Post findPostById(long postId) {

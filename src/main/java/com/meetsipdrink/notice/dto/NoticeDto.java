@@ -26,10 +26,8 @@ public class NoticeDto {
     @Getter
     @AllArgsConstructor
     public static class Patch {
-        @NotBlank
         private String title;
 
-        @NotBlank
         private String content;
 
         private List<String> imageUrls;
