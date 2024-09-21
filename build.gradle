@@ -76,6 +76,8 @@ dependencies {
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5' // 추가
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis' // 추가
 
+	// decoding
+	implementation 'org.json:json:20210307'
 }
 
 tasks.named('test') {
