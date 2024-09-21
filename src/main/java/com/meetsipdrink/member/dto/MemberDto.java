@@ -83,6 +83,8 @@ public class MemberDto {
     @Setter
     @NoArgsConstructor
     public static class Response{
+        private Long memberId;
+
         private String email;
 
         private String password;
