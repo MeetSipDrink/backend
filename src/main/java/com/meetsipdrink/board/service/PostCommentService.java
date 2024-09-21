@@ -36,7 +36,7 @@ public class PostCommentService {
 
     public PostComment createPostComment(PostComment postComment) throws IllegalArgumentException {
         Post post = postService.findVerifiedPost(postComment.getPost().getPostId());
-        Member member = memberService.findVerifiedMember(postComment.getMember().getMemberId());
+        Member member = memberService.findMemberByEmail(postComment.getMember().getEmail());
 
         postComment.setPost(post);
         postComment.setMember(member);

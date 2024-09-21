@@ -22,7 +22,6 @@ public class PostComment extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long postCommentId;
 
-    @NotNull
     @Column(name = "post_comment_content", nullable = false)
     private String content;
 
