@@ -20,4 +20,10 @@ public class PushNotificationController {
         fcmService.sendMessage(request);
         return ResponseEntity.ok("Notification sent successfully");
     }
+
+    @PostMapping("/notice")
+    public ResponseEntity<?> sendNoticeNotification(@RequestBody PushNotificationRequest request) {
+        fcmService.sendNoticeNotificationToAllUsers(request.getTitle(), request.getMessage());
+        return ResponseEntity.ok("Notice Notification sent successfully");
+    }
 }
