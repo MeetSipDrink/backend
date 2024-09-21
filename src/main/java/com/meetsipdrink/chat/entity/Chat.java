@@ -1,6 +1,9 @@
 package com.meetsipdrink.chat.entity;
 
 import com.meetsipdrink.audit.Auditable;
+import com.meetsipdrink.chatRoom.entity.ChatRoom;
+import com.meetsipdrink.chatRoomParticipant.entity.ChatRoomParticipant;
+import com.meetsipdrink.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,13 +21,16 @@ public class Chat extends Auditable {
     private Long chatId;
 
     @Column(nullable = false)
-    private Long chatRoomId;
+    private String message;
 
-    @Column(nullable = false)
-    private String sender;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chat_room_id")
+    private ChatRoom chatRoom;
 
-    @Column(nullable = false)
-    private String content;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "participant_id", nullable = false)
+    private ChatRoomParticipant participant;
+
 
     @Enumerated(EnumType.STRING)
     private MessageType type;
@@ -32,4 +38,7 @@ public class Chat extends Auditable {
     public enum MessageType {
         CHAT, JOIN, LEAVE
     }
+
+
+
 }

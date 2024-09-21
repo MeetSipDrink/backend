@@ -26,11 +26,11 @@ public class ChatRoom  extends Auditable {
     @Column(name = "chat_room_name", nullable = false)
     private String chatRoomName;
 
-    // 방장 변경 메서드
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "host_id")  // 방장 정보를 저장할 외래키
     private Member host;
+
 
     @Getter
     @Setter
