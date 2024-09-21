@@ -68,6 +68,14 @@ public class MemberController {
                 , HttpStatus.OK);
     }
 
+    @GetMapping("/{nickname}")
+    public ResponseEntity getMember(@PathVariable("nickname") String nickname) {
+        Member member = service.findMemberByNickName(nickname);
+        return new ResponseEntity<>(
+                new SingleResponseDto<>(memberMapper.memberToResponseDto(member))
+                , HttpStatus.OK);
+    }
+
 //    @GetMapping("/{memberId}")
 //    public ResponseEntity<List<BanDto.banListResponse>> getBanList(@PathVariable long memberId) {
 //        List<BanDto.Response> banDtoList = banService.getBanList(memberId);
