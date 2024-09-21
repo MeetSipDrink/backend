@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.Positive;
 
 @RestController
-@RequestMapping("/posts/{post-id}/like")
+@RequestMapping("/posts/{post-id}/likes")
 @Validated
 public class PostLikeController {
     private final PostLikeService postLikeService;

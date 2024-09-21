@@ -21,11 +21,9 @@ public class Notice extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long noticeId;
 
-    @NotNull
     @Column(name = "notice_title", nullable = false)
     private String title;
 
-    @NotNull
     @Column(name = "notice_content", nullable = false)
     private String content;
 

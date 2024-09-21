@@ -40,10 +40,8 @@ public class PostDto {
         @Setter
         private String email;
 
-        @NotBlank
         private String title;
 
-        @NotBlank
         private String content;
 
         private String imageUrl1;

@@ -46,8 +46,9 @@ public class NoticeService {
 
     public Notice updateNotice(long noticeId, Notice notice, String email) {
         Notice findNotice = findVerifiedNotice(noticeId);
+        Member member = memberService.findMemberByEmail(email);
 
-        if (!email.equals("admin@gmail.com")) {
+        if (!member.getRoles().toString().contains("ADMIN")) {
             throw new BusinessLogicException(ExceptionCode.NOTICE_UNAUTHORIZED_ACTION); // 관리자 검증 실패
         }
 
