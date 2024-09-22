@@ -52,17 +52,20 @@ public class PostCommentService {
             }
 
             postComment.setParentComment(parentComment);
-
-            String fcmtoken = postComment.getParentComment().getMember().getFcmToken();
-            String nickname = postComment.getMember().getNickname();
-            fcmService.sendCommentNotification(fcmtoken, nickname, postComment.getContent());
+            if (!postComment.getParentComment().getMember().getFcmToken().equals(postComment.getMember().getFcmToken())) {
+                String fcmtoken = postComment.getParentComment().getMember().getFcmToken();
+                String nickname = postComment.getMember().getNickname();
+                fcmService.sendCommentNotification(fcmtoken, nickname, postComment.getContent());
+            }
         } else {
             // 부모 댓글이 없을 경우, 최상위 댓글로 설정
             postComment.setParentComment(null);
 
-            String fcmtoken = postComment.getPost().getMember().getFcmToken();
-            String nickname = postComment.getMember().getNickname();
-            fcmService.sendCommentNotification(fcmtoken, nickname, postComment.getContent());
+            if (!postComment.getPost().getMember().getFcmToken().equals(postComment.getMember().getFcmToken())) {
+                String fcmtoken = postComment.getPost().getMember().getFcmToken();
+                String nickname = postComment.getMember().getNickname();
+                fcmService.sendCommentNotification(fcmtoken, nickname, postComment.getContent());
+            }
         }
 
         post.setCommentCount(post.getCommentCount() + 1);
