@@ -66,7 +66,7 @@ public class FriendService {
     public void acceptFriendRequest(String email, long recipientId) {
         Member recipient = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-        Friend friendRequest = friendRepository.findByRequester_MemberIdAndRecipient_MemberId(recipientId, recipient.getMemberId())
+        Friend friendRequest = friendRepository.findByRequester_MemberIdAndRecipient_MemberId(recipient.getMemberId(), recipientId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.FRIEND_REQUEST_NOT_FOUND));
 
         if (!friendRequest.getRecipient().equals(recipient)) {
@@ -159,5 +159,3 @@ public class FriendService {
         }
     }
 }
-
-
