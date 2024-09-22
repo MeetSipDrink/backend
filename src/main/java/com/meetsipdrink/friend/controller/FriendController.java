@@ -51,7 +51,7 @@ public class FriendController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/{status}/")
+    @GetMapping("/get/{status}")
     public ResponseEntity getFriends(@AuthenticationPrincipal Object principal,
                                      @PathVariable("status") String status) {
         Friend.Status enumFriendStatus = friendService.convertToFriendStatus(status);
@@ -60,7 +60,7 @@ public class FriendController {
         return new ResponseEntity<>(new SingleResponseDto<>(responseList), HttpStatus.OK);
     }
 
-    @GetMapping("/{friend-id}/")
+    @GetMapping("/{friend-id}")
     public ResponseEntity getFriend(@AuthenticationPrincipal Object principal,
                                     @PathVariable("friend-id") long friendId) {
         Friend friend = friendService.getFriend(principal.toString(), friendId);
