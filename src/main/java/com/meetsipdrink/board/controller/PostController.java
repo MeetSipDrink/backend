@@ -63,64 +63,40 @@ public class PostController {
                 new SingleResponseDto<>(mapper.postToPostResponseDto(post)), HttpStatus.OK);
     }
 
-    @GetMapping("/search/title")
-    public ResponseEntity searchTitle( @RequestParam("keyword") String keyword,
-                                       @RequestParam(required = false) String sort,
-                                       @PageableDefault(sort = "postId", direction = Sort.Direction.DESC) Pageable pageable) {
-
-        if (sort != null) {
-            Sort sortOrder = Sort.by(sort.split("_")[0]).ascending();
-            if (sort.split("_")[1].equalsIgnoreCase("desc")) {
-                sortOrder = sortOrder.descending();
-            }
-            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOrder);
-        }
-
-        Page<Post> searchList = postService.searchPostTitle(pageable, keyword);
-        List<PostDto.Response> responseList = searchList.stream()
-                .map(mapper::postToPostResponseDto)
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(
-                new MultiResponseDto<>(responseList, searchList), HttpStatus.OK);
-    }
-    @GetMapping("/search/content")
-    public ResponseEntity searchContent(@RequestParam("keyword") String keyword,
-                                        @RequestParam(required = false) String sort,
-                                        @PageableDefault(sort = "postId", direction = Sort.Direction.DESC) Pageable pageable) {
-
-        if (sort != null) {
-            Sort sortOrder = Sort.by(sort.split("_")[0]).ascending();
-            if (sort.split("_")[1].equalsIgnoreCase("desc")) {
-                sortOrder = sortOrder.descending();
-            }
-            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOrder);
-        }
-
-        Page<Post> searchList = postService.searchPostContent(pageable, keyword);
-        List<PostDto.Response> responseList = searchList.stream()
-                .map(mapper::postToPostResponseDto)
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(
-                new MultiResponseDto<>(responseList, searchList), HttpStatus.OK);
-    }
-
     @GetMapping("/search")
-    public ResponseEntity searchTitleOrContent(@RequestParam("keyword") String keyword,
-                                               @RequestParam(required = false) String sort,
-                                               @PageableDefault(sort = "postId", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity search(@RequestParam("keyword") String keyword,
+                                 @RequestParam("searchOption") String searchOption,
+                                 @RequestParam(required = false) String sort,
+                                 @PageableDefault(sort = "postId", direction = Sort.Direction.DESC) Pageable pageable) {
 
         if (sort != null) {
             Sort sortOrder = Sort.by(sort.split("_")[0]).ascending();
             if (sort.split("_")[1].equalsIgnoreCase("desc")) {
                 sortOrder = sortOrder.descending();
             }
-            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOrder);
+            pageable = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(), sortOrder);
         }
 
-        Page<Post> searchList = postService.searchPostTitleOrContent(pageable, keyword);
+        Page<Post> searchList;
+
+        switch (searchOption) {
+            case "title":
+                searchList = postService.searchPostTitle(pageable, keyword);
+                break;
+            case "content":
+                searchList = postService.searchPostContent(pageable, keyword);
+                break;
+            case "title_content":
+                searchList = postService.searchPostTitleOrContent(pageable, keyword);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid search option");
+        }
+
         List<PostDto.Response> responseList = searchList.stream()
                 .map(mapper::postToPostResponseDto)
                 .collect(Collectors.toList());
+
         return new ResponseEntity<>(
                 new MultiResponseDto<>(responseList, searchList), HttpStatus.OK);
     }
