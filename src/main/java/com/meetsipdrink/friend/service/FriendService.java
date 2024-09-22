@@ -66,7 +66,7 @@ public class FriendService {
     public void acceptFriendRequest(String email, long recipientId) {
         Member recipient = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-        Friend friendRequest = friendRepository.findByRequester_MemberIdAndRecipient_MemberId(recipient.getMemberId(), recipientId)
+        Friend friendRequest = friendRepository.findByRequester_MemberIdAndRecipient_MemberId(recipientId, recipient.getMemberId())
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.FRIEND_REQUEST_NOT_FOUND));
 
         if (!friendRequest.getRecipient().equals(recipient)) {
@@ -99,9 +99,11 @@ public class FriendService {
     public void removeFriend(String email, long friendId) {
         Member requester = memberService.findMemberByEmail(email);
         // 1. 친구 관계 조회
-        List<Friend> friendRelations = friendRepository.findByRequester_MemberIdOrRecipient_MemberIdAndFriendStatus(requester.getMemberId(), friendId, Friend.Status.ACCEPTED);
+        List<Friend> friendRelations = friendRepository.findByMemberIdsAndFriendStatus(requester.getMemberId(), friendId, Friend.Status.ACCEPTED);
+
 
         // 2. 양방향으로 존재하는 친구 관계 삭제
+
         for (Friend friend : friendRelations) {
             if (friend.getRequester().getMemberId() == friendId || friend.getRecipient().getMemberId() == friendId) {
                 friendRepository.delete(friend);
@@ -122,10 +124,10 @@ public class FriendService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
-        List<Friend> friends = friendRepository.findByRequesterAndFriendStatus(member, status);
+        List<Friend> friends = friendRepository.findByRecipientAndFriendStatus(member, status);
         List<Member> friendMembers = new ArrayList<>();
         for (Friend friend : friends) {
-            friendMembers.add(friend.getRecipient());
+            friendMembers.add(friend.getRequester());
         }
         return friendMembers;
     }
