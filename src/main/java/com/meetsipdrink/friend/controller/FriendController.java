@@ -51,7 +51,7 @@ public class FriendController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/{status}")
+    @GetMapping("/get/{status}")
     public ResponseEntity getFriends(@AuthenticationPrincipal Object principal,
                                      @PathVariable("status") String status) {
         Friend.Status enumFriendStatus = friendService.convertToFriendStatus(status);
