@@ -1,3 +1,4 @@
+
 package com.meetsipdrink.chatRoom.repository;
 
 
@@ -11,5 +12,6 @@ import java.util.Optional;
 @Repository
 public interface ChatRoomRepository extends JpaRepository<ChatRoom , Long> {
     Optional<ChatRoom> findByHost(Member host);
-    
+
 }
+

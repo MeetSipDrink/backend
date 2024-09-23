@@ -9,7 +9,10 @@ import com.meetsipdrink.member.entity.Member;
 import com.meetsipdrink.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,20 +26,40 @@ public class ChatRoomService {
     private final ChatRoomParticipantService participantService;
 
     // 채팅방 생성 메서드
+    private static final Logger logger = LoggerFactory.getLogger(ChatRoomService.class);
+
+    @Transactional
     public ChatRoom createChatRoom(String roomName, Long memberId) {
+        logger.info("Creating chat room with name: {} for member: {}", roomName, memberId);
+
+        if (roomName == null || roomName.trim().isEmpty()) {
+            logger.error("Room name is null or empty");
+            throw new IllegalArgumentException("Room name cannot be null or empty");
+        }
+
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid member ID: " + memberId));
+                .orElseThrow(() -> {
+                    logger.error("Invalid member ID: {}", memberId);
+                    return new IllegalArgumentException("Invalid member ID: " + memberId);
+                });
+
         Optional<ChatRoom> existingChatRoom = chatRoomRepository.findByHost(member);
         if (existingChatRoom.isPresent()) {
+            logger.error("Member (ID: {}) already has a chat room", memberId);
             throw new IllegalStateException("This member (ID: " + memberId + ") already has a chat room.");
         }
 
         ChatRoom chatRoom = new ChatRoom();
-        chatRoom.setChatRoomName(roomName);
+        chatRoom.setRoomName(roomName.trim());
         chatRoom.setHost(member);
         member.setChatRoom(chatRoom);
+
         ChatRoom savedChatRoom = chatRoomRepository.save(chatRoom);
+        logger.info("Chat room saved: {}", savedChatRoom);
+
         participantService.addParticipant(savedChatRoom.getChatRoomId(), memberId);
+        logger.info("Participant added to chat room");
+
         return savedChatRoom;
     }
     //참여자 추가  이거 participant 서비스단에사 구현

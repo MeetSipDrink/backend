@@ -12,7 +12,10 @@ import java.util.Optional;
 @Repository
 public interface ChatRoomParticipantRepository extends JpaRepository<ChatRoomParticipant, Long> {
     List<ChatRoomParticipant> findByChatRoom_ChatRoomId(Long chatRoomId); // 채팅방 ID로 참가자 조회
+
     Optional<ChatRoomParticipant> findByChatRoom_ChatRoomIdAndParticipant(Long chatRoomId, Member participant); // 수정된 메소드
     Optional<ChatRoomParticipant> findByParticipant(Member member);
-    int countByChatRoom_ChatRoomId(Long chatRoomId);
+
+    // 특정 채팅방에서 멤버가 참여 중인지 확인
+    int countByChatRoom_ChatRoomId(Long chatRoomId); // 채팅방 ID로 참가자 수 카운트
 }

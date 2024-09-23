@@ -32,7 +32,7 @@ public class ChatRoomDto {
     @Setter
     public static class Response {
         private Long chatRoomId;
-        private String chatRoomName;
+        private String roomName;
         private MemberDto host;
         private Set<MemberDto> participant;
     }

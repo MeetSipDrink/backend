@@ -17,9 +17,7 @@ public interface   ChatRoomMapper {
 
 
 
-    }
-
-
+}
 
 
 

@@ -9,7 +9,10 @@ import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member , Long> {
     Optional<Member> findByEmail(String email);
+
     Optional<Member> findByNickname(String nickname);
+
     @Query(value = "SELECT member_fcm_token FROM member WHERE member_fcm_token IS NOT NULL AND member_id != 1", nativeQuery = true)
     List<String> findAllFcmTokens();
+
 }

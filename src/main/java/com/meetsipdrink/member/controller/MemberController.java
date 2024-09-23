@@ -12,6 +12,9 @@ import com.meetsipdrink.member.mapper.MemberMapper;
 import com.meetsipdrink.member.service.MemberService;
 import com.meetsipdrink.utils.UriCreator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -39,6 +42,117 @@ public class MemberController {
     private final MemberService memberService;
     private final FriendService friendService;
     private final BanService banService;
+
+
+
+    private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
+
+    @RestController
+    @RequestMapping("/members")
+    @RequiredArgsConstructor
+    public class ChatController {
+
+        private final MemberService memberService;
+        private final MemberMapper memberMapper;
+        private final Logger logger = LoggerFactory.getLogger(ChatController.class);
+
+
+        @GetMapping("/by-token-email")
+        public ResponseEntity<SingleResponseDto<MemberDto.Response>> getMemberByEmailFromToken(@AuthenticationPrincipal Object principal) {
+            logger.info("Received request to get member by token email for principal: {}", principal);
+
+            try {
+                if (principal == null) {
+                    logger.error("Principal is null, cannot fetch member info");
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+
+                String email = principal.toString(); // JWT에서 이메일 추출
+                logger.info("Extracted email from token: {}", email);
+
+                Member member = memberService.findMemberByEmail(email);
+                if (member == null) {
+                    logger.error("Member not found for email: {}", email);
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+
+                // Log member details for debugging
+                logger.info("Found member: {}", member);
+
+                // 응답 DTO로 변환
+                MemberDto.Response responseDto = memberMapper.memberToResponseDto(member);
+                return new ResponseEntity<>(new SingleResponseDto<>(responseDto), HttpStatus.OK);
+            } catch (Exception e) {
+                logger.error("Error occurred while fetching member info by token email", e);
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+
+
+        @GetMapping("/me")
+        public ResponseEntity<SingleResponseDto<MemberDto.Response>> getMemberInfo(@AuthenticationPrincipal Object principal) {
+            logger.info("Received request to get member info for principal: {}", principal);
+
+            try {
+                if (principal == null) {
+                    logger.error("Principal is null, cannot fetch member info");
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+
+                String email = principal.toString();
+                logger.info("Extracted email: {}", email);
+
+                Member member = memberService.findMemberByEmail(email);
+                if (member == null) {
+                    logger.error("Member not found for email: {}", email);
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+
+                // Log member details for debugging
+                logger.info("Found member: {}", member);
+
+                // 응답 DTO로 변환
+                MemberDto.Response responseDto = memberMapper.memberToResponseDto(member);
+                return new ResponseEntity<>(new SingleResponseDto<>(responseDto), HttpStatus.OK);
+            } catch (Exception e) {
+                logger.error("Error occurred while fetching member info", e);
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+
+        // 사용자 닉네임을 JWT 토큰의 이메일을 통해 반환하는 메서드
+        @GetMapping("/me/nickname")
+        public ResponseEntity<SingleResponseDto<String>> getNicknameByEmail(@AuthenticationPrincipal Object principal) {
+            logger.info("Received request to get nickname for principal: {}", principal);
+
+            try {
+                if (principal == null) {
+                    logger.error("Principal is null, cannot fetch nickname");
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+
+                String email = principal.toString();
+                logger.info("Extracted email: {}", email);
+
+                Member member = memberService.findMemberByEmail(email);
+                if (member == null) {
+                    logger.error("Member not found for email: {}", email);
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+
+                logger.info("Found member: {}", member);
+
+                return new ResponseEntity<>(
+                        new SingleResponseDto<>(member.getNickname()),  // 닉네임을 응답으로 반환
+                        HttpStatus.OK
+                );
+            } catch (Exception e) {
+                logger.error("Error occurred while fetching nickname", e);
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
+
 
     @PostMapping
     public ResponseEntity postMember(@Valid @RequestBody MemberDto.Post requestBody) {

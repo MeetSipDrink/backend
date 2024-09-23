@@ -23,8 +23,8 @@ public class ChatRoom  extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatRoomId;
 
-    @Column(name = "chat_room_name", nullable = false)
-    private String chatRoomName;
+    @Column(name = "room_name", nullable = false)
+    private String roomName;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
