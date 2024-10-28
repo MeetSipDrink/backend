@@ -34,7 +34,7 @@ public class AdultAuthService {
 
             // 첫 번째 요청 바디 설정
             String requestBody = String.format(
-                    "{\"organization\":\"0002\", \"loginType\":\"6\", \"loginTypeLevel\":\"5\", \"telecom\":\"%d\", \"phoneNo\":\"%s\", \"loginUserName\":\"%s\", \"loginIdentity\":\"%s\", \"identity\":\"%s\", \"userName\":\"%s\", \"issueDate\":\"20240919\"}",
+                    "{\"organization\":\"0002\", \"loginType\":\"6\", \"loginTypeLevel\":\"1\", \"telecom\":\"%d\", \"phoneNo\":\"%s\", \"loginUserName\":\"%s\", \"loginIdentity\":\"%s\", \"identity\":\"%s\", \"userName\":\"%s\", \"issueDate\":\"20240919\"}",
                     telecom, phoneNo, name, identity, identity, name);
 
             OutputStream os = con.getOutputStream();
